@@ -45,3 +45,4 @@ end
 
 gem 'has_secure_token'
 
+gem 'tzinfo-data', platforms: [:mingw, :mswin]
