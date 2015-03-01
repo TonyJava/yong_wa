@@ -4,7 +4,7 @@ class User < ActiveRecord::Base
   has_many :device
   has_secure_token :auth_token
 	#validates :mobile, format: { with: /^0?(13[0-9]|15[012356789]|18[0236789]|14[57])[0-9]{8}$/, message: "mobile format error."}
-  before_save :encrypt_password
+  before_create :encrypt_password
   after_save :clear_captcha_cache
 
   def encrypt_password

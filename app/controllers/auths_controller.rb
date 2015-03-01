@@ -96,6 +96,7 @@ class AuthsController < ApplicationController
   end
 
   def login
+    #binding.pry
     if !User.auth?(params[:mobile], params[:password])
       render :json => {
         msg: "login code error",
@@ -103,8 +104,8 @@ class AuthsController < ApplicationController
         code: 10501
       }
     else
-      user = User.find_by(mobile: mobile)
-      user.regenerate_auth_token
+      user = User.find_by(mobile: params[:mobile])
+      user.regenerate_auth_token!
 
       render :json => {
         msg: "login ok",
