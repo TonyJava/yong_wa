@@ -1,8 +1,10 @@
 class AuthsController < ApplicationController
   def send_captcha
+    #binding.pry
     if User.mobile_format_valid?(params[:mobile])
       captcha = Random.new
       session[:captcha] = captcha.rand(1000..9999)
+      binding.pry
       #send captcha
 
       render :json => {
@@ -21,6 +23,7 @@ class AuthsController < ApplicationController
 
   def check_captcha
     captcha = params[:captcha]
+    binding.pry
     if captcha == session[:captcha]
       render :json => {
         msg: "check success",
@@ -56,7 +59,7 @@ class AuthsController < ApplicationController
         code: 10303
       }
     else
-      user = User.create(user_params)!
+      user = User.create(user_params)
       device = Device.find_by(params[:device])
       device.user = user
       device.save!
@@ -130,7 +133,7 @@ class AuthsController < ApplicationController
         code: 10603
       }
     else 
-      user = User.update(user_params)!
+      user = User.update(user_params)
       render :json => {
         msg: "reset password ok",
         request: "POST/auth/reset_password",

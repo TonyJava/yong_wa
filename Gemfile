@@ -45,4 +45,7 @@ end
 
 gem 'has_secure_token'
 
+gem 'sentry-raven'
+gem 'pry'
+
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
