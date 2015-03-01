@@ -3,7 +3,9 @@
 one:
   mobile: MyString
   password: MyString
+  auth_token: MyString
 
 two:
   mobile: MyString
   password: MyString
+  auth_token: MyString

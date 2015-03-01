@@ -1,4 +1,17 @@
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :manage_users
+  end
+
+  namespace :admin do
+    resources :logins, only: [:new, :create, :destroy]
+    root 'logins#new'
+  end
+
+  resources :devices
+
+  resources :users
+
   get 'auths/send_captcha'
 
   post 'auths/check_captcha'
@@ -10,6 +23,8 @@ Rails.application.routes.draw do
   post 'auths/login'
 
   post 'auths/reset_password'
+
+
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

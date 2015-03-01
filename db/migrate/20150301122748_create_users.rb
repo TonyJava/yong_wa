@@ -4,6 +4,7 @@ class CreateUsers < ActiveRecord::Migration
       t.string :mobile
       t.string :password
       t.string :auth_token
+
       t.timestamps null: false
     end
   end

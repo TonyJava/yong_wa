@@ -46,11 +46,17 @@ end
 gem 'has_secure_token'
 
 gem 'sentry-raven'
+
 gem 'pry'
+# Teaches Pry about step, next, and continue to create a simple debugger.
+# Run 'step' or 'next' in the console
+gem 'pry-nav' 
+gem 'pry-rails', :group => :development # for console
 
 gem 'redis'
 gem 'redis-namespace'
 gem 'redis-rails'
 gem 'redis-rack-cache'
 
+gem 'mysql2'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]

@@ -8,6 +8,10 @@
 </head>
 <body>
 
+<% if session[:login] != nil %>
+  <%= link_to "logout", admin_login_path(id: 1), method: :delete %>
+<% end %>
+
 <%= yield %>
 
 </body>
