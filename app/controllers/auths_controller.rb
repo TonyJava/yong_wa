@@ -3,8 +3,10 @@ class AuthsController < ApplicationController
     #binding.pry
     if User.mobile_format_valid?(params[:mobile])
       captcha = Random.new
-      session[:captcha] = captcha.rand(1000..9999)
-      binding.pry
+      captcha_cache = captcha.rand(1000..9999)
+      $redis.set(params[:mobile], captcha_cache)
+      $redis.expire(params[:mobile], 5.min.to_i)
+      #binding.pry
       #send captcha
 
       render :json => {
@@ -23,8 +25,9 @@ class AuthsController < ApplicationController
 
   def check_captcha
     captcha = params[:captcha]
-    binding.pry
-    if captcha == session[:captcha]
+    captcha_cache = $redis.get(params[:mobile])
+    #binding.pry
+    if captcha_cache != nil && captcha == captcha_cache
       render :json => {
         msg: "check success",
         request: "POST/auths/send_captcha",
@@ -40,13 +43,14 @@ class AuthsController < ApplicationController
   end
 
   def register
+    captcha_cache = $redis.get(params[:mobile])
     if !User.mobile_format_valid?(params[:mobile])
       render :json => {
         msg: "register code error",
         request: "POST/auths/register",
         code: 10301
       }
-    elsif params[:captcha] != session[:captcha]
+    elsif params[:captcha] != captcha_cache || captcha_cache == nil
       render :json => {
         msg: "register code error",
         request: "POST/auths/register",
@@ -63,7 +67,6 @@ class AuthsController < ApplicationController
       device = Device.find_by(params[:device])
       device.user = user
       device.save!
-      session[:auth] = user.id
 
       render :json => {
         msg: "register success",
@@ -102,7 +105,6 @@ class AuthsController < ApplicationController
     else
       user = User.find_by(mobile: mobile)
       user.regenerate_auth_token
-      session[:auth] = user.id
 
       render :json => {
         msg: "login ok",
@@ -114,13 +116,14 @@ class AuthsController < ApplicationController
   end
 
   def reset_password
+    captcha_cache = $redis.get(params[:mobile])
     if !User.registered?(params[:mobile])
       render :json => {
         msg: "reset password code error",
         request: "POST/auth/reset_password",
         code: 10601
       }
-    elsif params[:captcha] != session[:captcha]
+    elsif params[:captcha] != captcha_cache || captcha_cache == nil
       render :json => {
         msg: "reset password code error",
         request: "POST/auth/reset_password",

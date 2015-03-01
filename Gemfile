@@ -48,4 +48,9 @@ gem 'has_secure_token'
 gem 'sentry-raven'
 gem 'pry'
 
+gem 'redis'
+gem 'redis-namespace'
+gem 'redis-rails'
+gem 'redis-rack-cache'
+
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
