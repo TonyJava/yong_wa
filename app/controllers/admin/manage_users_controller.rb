@@ -1,6 +1,6 @@
 class Admin::ManageUsersController < ApplicationController
   before_action :set_admin_manage_user, only: [:show, :edit, :update, :destroy]
-
+  before_action :require_login
   # GET /admin/manage_users
   # GET /admin/manage_users.json
   def index

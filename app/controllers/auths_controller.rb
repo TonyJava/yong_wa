@@ -5,9 +5,10 @@ class AuthsController < ApplicationController
       captcha = Random.new
       captcha_cache = captcha.rand(1000..9999)
       $redis.set(params[:mobile], captcha_cache)
-      $redis.expire(params[:mobile], 5.min.to_i)
+      $redis.expire(params[:mobile], 5.minute.to_i)
       #binding.pry
       #send captcha
+      send_captcha_to_mobile(params[:mobile], captcha_cache)
 
       render :json => {
         msg: "send ok",
@@ -37,7 +38,7 @@ class AuthsController < ApplicationController
       render :json => {
         msg: "captcha code error",
         request: "GET/auths/check_captcha",
-        code: 10202
+        code: 10201
       } 
     end
   end
