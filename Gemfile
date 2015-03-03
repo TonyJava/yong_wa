@@ -59,4 +59,13 @@ gem 'redis-rails'
 gem 'redis-rack-cache'
 
 gem 'mysql2'
+gem 'unicorn'
+
+group :development do
+  gem 'capistrano', '~> 3.2.1'
+  gem 'capistrano-rails', '~> 1.1.1'
+  gem 'capistrano-bundler', '~> 1.1.2'
+  gem 'capistrano-rbenv', '~> 2.0.2'
+end
+
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
