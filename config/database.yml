@@ -14,10 +14,10 @@ development:
 #  database: db/development.sqlite3
   adapter: mysql2
   encoding: utf8
-  database: yong_wa_development
+  database: xh_ror
   pool: 5
-  username: root
-  password:
+  username: xh_ror
+  password: v9EMmM8n
   socket: /tmp/mysql.sock
 
 # Warning: The database defined as "test" will be erased and
