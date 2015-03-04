@@ -13,6 +13,7 @@ namespace :setup do
     on roles(:app) do
       within "#{current_path}" do
         with rails_env: :production do
+          execute :rake, "db:migrate"
           execute :rake, "db:seed"
         end
       end
@@ -26,6 +27,7 @@ namespace :setup do
 
       execute "ln -nfs #{current_path}/config/nginx.conf /etc/nginx/sites-enabled/#{fetch(:application)}"
       execute "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_#{fetch(:application)}"
+      execute "ln -nfs #{current_path}/config/redis_init.sh /etc/init.d/redis_#{fetch(:application)}"
    end
   end
 
