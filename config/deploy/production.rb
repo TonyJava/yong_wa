@@ -12,7 +12,8 @@ set :stage, :production
 set :rails_env, :production
 
 set :branch, 'develop'
-host = '115.28.155.73'
+#host = '115.28.155.73' panda
+host = '120.25.212.225'
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the

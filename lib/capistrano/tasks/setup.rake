@@ -20,6 +20,12 @@ namespace :setup do
     end
   end
 
+  task :upload_nginx do
+    on roles(:app) do
+      upload! StringIO.new(File.read("config/nginx.conf")), "#{current_path}/config/nginx.conf"
+    end
+  end
+
   desc "Symlinks config files for Nginx and Unicorn."
   task :symlink_config do
     on roles(:app) do
