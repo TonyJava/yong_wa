@@ -26,6 +26,13 @@ namespace :setup do
     end
   end
 
+  task :upload_gen_production_key do
+    on roles(:db) do
+      upload! StringIO.new(File.read("config/gen_production_key.sh")), "#{current_path}/config/gen_production_key.sh"
+      execute "chmod +x #{current_path}/config/gen_production_key.sh"
+    end
+  end
+
   desc "Symlinks config files for Nginx and Unicorn."
   task :symlink_config do
     on roles(:app) do
