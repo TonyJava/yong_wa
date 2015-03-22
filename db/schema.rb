@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150301132710) do
+ActiveRecord::Schema.define(version: 20150321124312) do
 
   create_table "admin_manage_users", force: :cascade do |t|
     t.string   "user_name",  limit: 255
@@ -22,12 +22,19 @@ ActiveRecord::Schema.define(version: 20150301132710) do
 
   create_table "devices", force: :cascade do |t|
     t.string   "series_code", limit: 255
-    t.integer  "user_id",     limit: 4
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
   end
 
-  add_index "devices", ["user_id"], name: "index_devices_on_user_id", using: :btree
+  create_table "user_devices", force: :cascade do |t|
+    t.integer  "user_id",    limit: 4
+    t.integer  "device_id",  limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "user_devices", ["device_id"], name: "index_user_devices_on_device_id", using: :btree
+  add_index "user_devices", ["user_id"], name: "index_user_devices_on_user_id", using: :btree
 
   create_table "users", force: :cascade do |t|
     t.string   "mobile",     limit: 255
@@ -37,5 +44,6 @@ ActiveRecord::Schema.define(version: 20150301132710) do
     t.datetime "updated_at",             null: false
   end
 
-  add_foreign_key "devices", "users"
+  add_foreign_key "user_devices", "devices"
+  add_foreign_key "user_devices", "users"
 end

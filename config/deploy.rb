@@ -7,6 +7,14 @@ set :repo_url, 'git@github.com:lzhgamedev/yong_wa.git'
 set :deploy_to, "/www/web/#{fetch(:application)}"
 set :deploy_user, "root"
 
+
+# ---------
+#  bundler
+# ---------
+set :rake, "bundle exec rake"
+
+
+
 # Default branch is :master
 # ask :branch, proc { `git rev-parse --abbrev-ref HEAD`.chomp }.call
 

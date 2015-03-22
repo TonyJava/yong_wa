@@ -20,7 +20,7 @@ host = '120.25.212.225'
 # server list. The second argument is a, or duck-types, Hash and is
 # used to set extended properties on the server.
 
-server host, user: 'root', port: 22, roles: %w{web app}, primary: :true
+server host, user: 'root', port: 22, roles: %w{web app db}, primary: :true
 
 
 # Custom SSH Options

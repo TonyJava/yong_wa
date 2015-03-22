@@ -1,5 +1,5 @@
 class Device < ActiveRecord::Base
-  belongs_to :user
+  has_many :user_device
 
 
   def self.exist?(device)

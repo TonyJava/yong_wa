@@ -1,4 +1,6 @@
 Rails.application.routes.draw do
+  resources :user_devices
+
   namespace :admin do
     resources :manage_users
   end
