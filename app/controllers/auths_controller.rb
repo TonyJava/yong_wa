@@ -14,13 +14,13 @@ class AuthsController < ApplicationController
         msg: "send ok",
         request: "GET/auths/send_captcha",
         code: 10000
-      }
+      }, status: 200
     else
       render :json => {
         msg: "send captcha error",
         request: "GET/auts/send_captcha",
         code: 10101
-      }    
+      }, status: 400    
     end
   end
 
@@ -66,8 +66,8 @@ class AuthsController < ApplicationController
     else
       user = User.create(user_params)
       device = Device.find_by(params[:device])
-      device.user = user
-      device.save!
+      user_device = UserDevice.new(user: user, device: device)
+      user_device.save!
 
       render :json => {
         msg: "register success",
