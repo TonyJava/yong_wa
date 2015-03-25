@@ -1,13 +1,13 @@
 Rails.application.routes.draw do
   resources :histories
 
-  get 'functions/show_device'
+  post 'functions/show_device'
 
-  get 'functions/update_device'
+  post 'functions/update_device'
 
-  get 'functions/show_history'
+  post 'functions/show_history'
 
-  get 'functions/send_command'
+  post 'functions/send_command'
 
   resources :user_devices
 
