@@ -58,7 +58,8 @@ class FunctionsController < ApplicationController
       device.weight = params[:weight] unless params[:weight] == nil
       device.mobile = params[:mobile] unless params[:mobile] == nil
       device.imei = params[:imei] unless params[:imei] == nil
-
+      device.save!
+      
       render :json => {
         msg: "update device ok",
         request: "POST/functions/update_device",
@@ -85,7 +86,7 @@ class FunctionsController < ApplicationController
       }
     else
       histories = History.where(device: device)
-      
+
     end
   end
 
