@@ -20,7 +20,7 @@ module ApplicationHelper
     #{"error": 0,...}
     #{error: 0,...} symbolize_names: true
     logger.debug "#{res.body}"
-    binding.pry
+    #binding.pry
     return JSON.parse(res.body, symbolize_names: true)[:error]
   end
 
