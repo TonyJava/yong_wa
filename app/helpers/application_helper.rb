@@ -3,6 +3,16 @@ require 'uri'
 require 'json'
 module ApplicationHelper
 
+  module Command
+    TELEPHONE = 1,
+    COLLIDE   = 2,
+    SEND_POSITION_TIMES = 3,
+    BARRAGE = 4,
+    SEND_POSITION_ONCE = 5,
+    REPORT_POSITION = 6,
+    SILENT_PERIOD = 7,
+    CHECK_LOST = 8
+  end
   #url: http://luosimao.com/docs/api/
   #url: http://ruby-doc.org/stdlib-2.2.0/libdoc/net/http/rdoc/Net/HTTP.html
   #res.code

@@ -59,4 +59,14 @@ class User < ActiveRecord::Base
   def clear_captcha_cache
     $redis.del self.mobile
   end
+
+  def self.token_valid?(token)
+    u = User.find_by(auth_token: token)
+    if u != nil
+      true
+    else
+      false
+    end
+  end
+  
 end

@@ -1,0 +1,19 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user_device_id: 
+  data_type: 1
+  data_content: MyString
+  time_stamp: 2015-03-25 22:21:58
+  location_code: MyString
+  location_type: MyString
+  data_stamp_address: MyString
+
+two:
+  user_device_id: 
+  data_type: 1
+  data_content: MyString
+  time_stamp: 2015-03-25 22:21:58
+  location_code: MyString
+  location_type: MyString
+  data_stamp_address: MyString

@@ -1,4 +1,14 @@
 Rails.application.routes.draw do
+  resources :histories
+
+  get 'functions/show_device'
+
+  get 'functions/update_device'
+
+  get 'functions/show_history'
+
+  get 'functions/send_command'
+
   resources :user_devices
 
   namespace :admin do

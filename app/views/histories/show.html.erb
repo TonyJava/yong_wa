@@ -1,0 +1,39 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>User device:</strong>
+  <%= @history.user_device %>
+</p>
+
+<p>
+  <strong>Data type:</strong>
+  <%= @history.data_type %>
+</p>
+
+<p>
+  <strong>Data content:</strong>
+  <%= @history.data_content %>
+</p>
+
+<p>
+  <strong>Time stamp:</strong>
+  <%= @history.time_stamp %>
+</p>
+
+<p>
+  <strong>Location code:</strong>
+  <%= @history.location_code %>
+</p>
+
+<p>
+  <strong>Location type:</strong>
+  <%= @history.location_type %>
+</p>
+
+<p>
+  <strong>Data stamp address:</strong>
+  <%= @history.data_stamp_address %>
+</p>
+
+<%= link_to 'Edit', edit_history_path(@history) %> |
+<%= link_to 'Back', histories_path %>
