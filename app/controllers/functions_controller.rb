@@ -59,7 +59,7 @@ class FunctionsController < ApplicationController
       device.mobile = params[:mobile] unless params[:mobile] == nil
       device.imei = params[:imei] unless params[:imei] == nil
       device.save!
-      
+
       render :json => {
         msg: "update device ok",
         request: "POST/functions/update_device",
@@ -74,22 +74,82 @@ class FunctionsController < ApplicationController
     device = Device.find_by(series_code: params[:device])
     if !User.token_valid?(params[:token])
       render :json => {
-        msg: "update device code error",
-        request: "POST/functions/update_device",
-        code: 20201
+        msg: "show history code error",
+        request: "POST/functions/show_history",
+        code: 20301
       }
     elsif device == nil
       render :json => {
-        msg: "update device code error",
-        request: "POST/functions/update_device",
-        code: 20202
+        msg: "show history code error",
+        request: "POST/functions/show_history",
+        code: 20302
       }
     else
-      histories = History.where(device: device)
+      perpage_count = params[:record_limit].to_i
+      histories = History.where(device: device).order(:created_at)
+      total_count = histories.count
+      max_page = total_count / perpage_count + 1
+      view_page = [params[:page_num].to_i, max_page].min
+      page_offset = perpage_count * (view_page - 1)
+      histories = histories.limit(perpage_count).offset(page_offset)
+      data_count = histories.count
 
+      hash_data = {}
+      data_count.times do |i|
+        history = histories[i]
+        hash_data["data_info#{i}"] = {
+          device: device.series_code,
+          data_type: history.data_type,
+          data_content: history.data_content,
+          time_stamp: history.created_at.to_s,
+          location_code: history.location_code,
+          location_type: history.location_type,
+          data_stamp_address: history.data_stamp_address
+        }
+      end
+
+      render :json => hash_data.merge({
+        msg: "show history ok",
+        request: "POST/functions/show_history",
+        code: 10000,
+        data_count: data_count,
+        max_page: max_page
+      })
     end
+
   end
 
   def send_command
+    device = Device.find_by(series_code: params[:device])
+    if !User.token_valid?(params[:token])
+      render :json => {
+        msg: "send command code error",
+        request: "POST/functions/send_command",
+        code: 20401
+      }
+    elsif device == nil
+      render :json => {
+        msg: "send command code error",
+        request: "POST/functions/send_command",
+        code: 20402
+      }
+    elsif (params[:command_info] == nil || params[:command_info].to_i < 1 || params[:command_info].to_i > 8)
+      render :json => {
+        msg: "send command code error",
+        request: "POST/functions/send_command",
+        code: 20403
+      }
+    else
+      history = History.new(device: device)
+      history.save!
+
+      render :json => {
+        msg: "send command ok",
+        request: "POST/functions/send_command",
+        code: 10000
+      }
+    end
+
   end
+
 end

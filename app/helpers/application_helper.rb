@@ -13,6 +13,7 @@ module ApplicationHelper
     SILENT_PERIOD = 7,
     CHECK_LOST = 8
   end
+  
   #url: http://luosimao.com/docs/api/
   #url: http://ruby-doc.org/stdlib-2.2.0/libdoc/net/http/rdoc/Net/HTTP.html
   #res.code

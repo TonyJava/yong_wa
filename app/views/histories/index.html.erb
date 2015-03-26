@@ -5,10 +5,9 @@
 <table>
   <thead>
     <tr>
-      <th>User device</th>
+      <th>Device</th>
       <th>Data type</th>
       <th>Data content</th>
-      <th>Time stamp</th>
       <th>Location code</th>
       <th>Location type</th>
       <th>Data stamp address</th>
@@ -19,10 +18,9 @@
   <tbody>
     <% @histories.each do |history| %>
       <tr>
-        <td><%= history.user_device %></td>
+        <td><%= history.device.series_code %></td>
         <td><%= history.data_type %></td>
         <td><%= history.data_content %></td>
-        <td><%= history.time_stamp %></td>
         <td><%= history.location_code %></td>
         <td><%= history.location_type %></td>
         <td><%= history.data_stamp_address %></td>
