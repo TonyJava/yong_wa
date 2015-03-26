@@ -7,12 +7,28 @@
   <%= csrf_meta_tags %>
 </head>
 <body>
-
-<% if session[:login] != nil %>
-  <%= link_to "logout", admin_login_path(id: 1), method: :delete %>
-<% end %>
-
-<%= yield %>
-
+  <header class="navbar navbar-fixed-top navbar-inverse">
+    <div class="navbar-inner">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="#">YongWa</a>
+        </div>
+        <nav>
+          <ul class="nav navbar-nav pull-right">
+            <% if session[:login] != nil %>
+              <li><%= link_to "users", users_path %></li>
+              <li><%= link_to "user_devices", user_devices_path %></li>
+              <li><%= link_to "histories", histories_path %></li>
+              <li><%= link_to "devices", devices_path %></li>
+              <li><%= link_to "logout", admin_login_path(id: 1), method: :delete %></li>
+            <% end %>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </header>
+  <div class="container">
+    <%= yield %>
+  </div>
 </body>
 </html>

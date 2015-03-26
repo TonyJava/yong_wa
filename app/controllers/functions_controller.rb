@@ -88,7 +88,10 @@ class FunctionsController < ApplicationController
       perpage_count = params[:record_limit].to_i
       histories = History.where(device: device).order(:created_at)
       total_count = histories.count
-      max_page = total_count / perpage_count + 1
+
+      max_page = total_count / perpage_count
+      max_page += 1 if total_count % perpage_count >= 1
+
       view_page = [params[:page_num].to_i, max_page].min
       page_offset = perpage_count * (view_page - 1)
       histories = histories.limit(perpage_count).offset(page_offset)
@@ -133,7 +136,7 @@ class FunctionsController < ApplicationController
         request: "POST/functions/send_command",
         code: 20402
       }
-    elsif (params[:command_info] == nil || params[:command_info].to_i < 1 || params[:command_info].to_i > 8)
+    elsif (params[:command_info] == nil || params[:command_info].to_i < ApplicationHelper::Command::TELEPHONE || params[:command_info].to_i > ApplicationHelper::Command::CHECK_LOST)
       render :json => {
         msg: "send command code error",
         request: "POST/functions/send_command",
