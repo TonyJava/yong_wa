@@ -5,6 +5,11 @@
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <style type="text/css">
+  html,body{
+    height: 100%
+}
+  </style>
 </head>
 <body>
   <header class="navbar navbar-fixed-top navbar-inverse">
@@ -29,6 +34,33 @@
   </header>
   <div class="container">
     <%= yield %>
+    <div class="navbar navbar-fixed-bottom">
+      <blockquote class="blockquote-reverse">
+        <footer>Yong Wa Admin by<cite title="海之槛歌">海之槛歌</cite></footer>
+      </blockquote>
+    </div>
   </div>
 </body>
+
+<%= javascript_tag do %>
+  
+$( document ).ready(function() {
+  $( "table" ).addClass( "table table-hover table-bordered" );
+
+  $( "form" ).css({
+    marginTop: "30px"
+  });
+  $( "form" ).addClass( "form-horizontal" );
+  $( "form div" ).addClass( "form-group" );
+  $( "form label" ).addClass( "col-sm-3 control-label" );
+  $( "form input:visible" ).not( "input[name='commit']" ).addClass( "form-control" );
+  $( "form input:visible" ).not( "input[name='commit']" ).wrap( "<div class='col-sm-4'></div>" );
+  $( "br" ).remove();
+
+  $( "input[name='commit']" ).addClass( "btn btn-primary" ); 
+  $( "input[name='commit']" ).wrap( "<div class='col-sm-offset-3 col-sm-4'></div>" );
+
+});  
+<% end %>
+
 </html>

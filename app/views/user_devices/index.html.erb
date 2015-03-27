@@ -14,8 +14,8 @@
   <tbody>
     <% @user_devices.each do |user_device| %>
       <tr>
-        <td><%= user_device.user %></td>
-        <td><%= user_device.device %></td>
+        <td><%= user_device.user.mobile %></td>
+        <td><%= user_device.device.series_code %></td>
         <td><%= link_to 'Show', user_device %></td>
         <td><%= link_to 'Edit', edit_user_device_path(user_device) %></td>
         <td><%= link_to 'Destroy', user_device, method: :delete, data: { confirm: 'Are you sure?' } %></td>
