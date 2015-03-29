@@ -21,7 +21,7 @@ class User < ActiveRecord::Base
   end
 
   def self.mobile_format_valid?(mobile)
-    mobile_regx = /^0?(13[0-9]|15[012356789]|18[01236789]|14[57])[0-9]{8}$/
+    mobile_regx = /^0?(13[0-9]|15[012356789]|18[0123456789]|14[57])[0-9]{8}$/
     if mobile_regx === mobile
       true
     else
@@ -68,5 +68,5 @@ class User < ActiveRecord::Base
       false
     end
   end
-  
+
 end
