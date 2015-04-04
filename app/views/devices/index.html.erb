@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>Device Id</th>
       <th>Device name</th>
       <th colspan="3"></th>
     </tr>
@@ -13,6 +14,7 @@
   <tbody>
     <% @devices.each do |device| %>
       <tr>
+        <td><%= device.id %></td>
         <td><%= device.series_code %></td>
         <td><%= link_to 'Show', device %></td>
         <td><%= link_to 'Edit', edit_device_path(device) %></td>

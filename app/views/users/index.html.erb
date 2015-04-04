@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>Id</th>
       <th>Mobile</th>
       <th>Password</th>
       <th>Auth token</th>
@@ -15,6 +16,7 @@
   <tbody>
     <% @users.each do |user| %>
       <tr>
+        <td><%= user.id %></td>
         <td><%= user.mobile %></td>
         <td><%= user.password %></td>
         <td><%= user.auth_token %></td>
