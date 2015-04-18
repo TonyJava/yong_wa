@@ -9,6 +9,8 @@ Rails.application.routes.draw do
 
   post 'functions/send_command'
 
+  post  'functions/bob_dog'
+
   resources :user_devices
 
   namespace :admin do

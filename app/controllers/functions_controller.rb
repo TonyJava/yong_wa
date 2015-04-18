@@ -155,4 +155,10 @@ class FunctionsController < ApplicationController
 
   end
 
+  def bob_dog
+    path = File.expand_path('public/Bobdog.xml', Rails.root)
+    file = File.read(path)
+    render json: Hash.from_xml(file).to_json
+  end
+
 end
