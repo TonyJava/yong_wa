@@ -138,7 +138,7 @@ class AuthsController < ApplicationController
         code: 10603
       }
     else
-      user ＝  User.find_by(mobile: params[:mobile])
+      user = User.find_by(mobile: params[:mobile])
       user.update(password: params[:password])
       render :json => {
         msg: "reset password ok",
