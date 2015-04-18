@@ -137,8 +137,9 @@ class AuthsController < ApplicationController
         request: "POST/auth/reset_password",
         code: 10603
       }
-    else 
-      user = User.update(mobile: params[:mobile], password: params[:password])
+    else
+      user ＝  User.find_by(mobile: params[:mobile])
+      user.update(password: params[:password])
       render :json => {
         msg: "reset password ok",
         request: "POST/auth/reset_password",
