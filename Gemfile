@@ -69,4 +69,10 @@ group :development do
   gem 'capistrano-rbenv', '~> 2.0.2'
 end
 
+#async
+gem 'sidekiq'
+gem 'sidekiq-status'
+gem 'sinatra', :require => nil
+#rerun
+gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]

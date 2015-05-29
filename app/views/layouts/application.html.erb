@@ -26,6 +26,8 @@
               <li><%= link_to "user_devices", user_devices_path %></li>
               <li><%= link_to "histories", histories_path %></li>
               <li><%= link_to "devices", devices_path %></li>
+              <li><%= link_to "socket listen", "#", id: "socket" %></li>
+              <li><%= link_to 'Monitoring', sidekiq_web_path %></li>
               <li><%= link_to "logout", admin_login_path(id: 1), method: :delete %></li>
             <% end %>
           </ul>
@@ -60,6 +62,22 @@ $( document ).ready(function() {
 
   $( "input[name='commit']" ).addClass( "btn btn-primary" ); 
   $( "input[name='commit']" ).wrap( "<div class='col-sm-offset-3 col-sm-4'></div>" );
+  
+  var socket_open = <%= SocketWorker.is_port_open? %>;
+  if( !socket_open ) {
+    $("a[id='socket']").css({
+      color: '#ff0000'
+    });
+  }
+  $("a[id='socket']").click(function( event ) {
+    event.preventDefault();
+    $(this).css({
+    color: '#ff0000'
+    });
+    <% if SocketWorker.is_port_open? %>
+    <%    SocketWorker.perform_async %>
+    <% end %>
+  });
 
 });  
 

@@ -1,4 +1,6 @@
+require 'sidekiq/web'
 Rails.application.routes.draw do
+  mount Sidekiq::Web => '/sidekiq'
   resources :histories
 
   post 'functions/show_device'
