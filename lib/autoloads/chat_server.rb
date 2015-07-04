@@ -1,5 +1,6 @@
 require "socket"
 class ChatServer
+
   def initialize( port )
     @descriptors = Array::new
     @serverSocket = TCPServer.new( "", port )
@@ -15,20 +16,27 @@ class ChatServer
     for sock in res[0]
     # Received a connect to the server (listening) socket
     if sock == @serverSocket then
-    accept_new_connection
+      accept_new_connection
     else
     # Received something on a client socket
     if sock.eof? then
-    str = sprintf("Client left %s:%s\n",
-    sock.peeraddr[2], sock.peeraddr[1])
-    broadcast_string( str, sock )
-    sock.close
-    @descriptors.delete(sock)
+      str = sprintf("Client left %s:%s\n",
+      sock.peeraddr[2], sock.peeraddr[1])
+      broadcast_string( str, sock )
+      sock.close
+      @descriptors.delete(sock)
     else
-    str = sprintf("[%s|%s]: %s",
-    sock.peeraddr[2], sock.peeraddr[1], sock.gets())
-    broadcast_string( str, sock )
+      #receive info
+      binding.pry
+      print(sock.gets())
+      str = sprintf("[%s|%s]: %s",
+      sock.peeraddr[2], sock.peeraddr[1], sock.gets())
+      broadcast_string( str, sock )
+
+      # str = sprintf("%s", sock.gets())
+      # send_message_by_received_string(str, sock)
     end
+
     end
     end
     end
@@ -37,11 +45,18 @@ class ChatServer
 
   private
 
+  def send_message_by_received_string(str, target_sock)
+    if str == "SG*8800000015*0002*LK"
+      target_sock.write("SG*8800000015*0002*LK")
+    end
+    target_sock.write "SG*8800000015*0002*LK\n"
+  end
+
   def broadcast_string( str, omit_sock )
     @descriptors.each do |clisock|
-    if clisock != @serverSocket && clisock != omit_sock
-    clisock.write(str)
-    end
+      if clisock != @serverSocket && clisock != omit_sock
+        clisock.write(str)
+      end
     end
     print(str)
   end # broadcast_string
@@ -53,6 +68,7 @@ class ChatServer
     str = sprintf("Client joined %s:%s\n",
     newsock.peeraddr[2], newsock.peeraddr[1])
     broadcast_string( str, newsock )
-    print(User.all.first.id)
+    #print(User.all.first.id)
+    #print MessageProcessor.in_command("SG*8800000015*0002*LK")
   end # accept_new_connection
 end #server

@@ -76,3 +76,5 @@ gem 'sinatra', :require => nil
 #rerun
 gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
+
+gem 'letsrate'

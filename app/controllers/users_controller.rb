@@ -30,7 +30,7 @@ class UsersController < ApplicationController
       if @user.save
         format.html { redirect_to @user, notice: 'User was successfully created.' }
         format.json { render :show, status: :created, location: @user }
-        $redis.publish 'user-created', user: @user.to_json
+        #$redis.publish 'user-created', user: @user.to_json
         #binding.pry
       else
         format.html { render :new }

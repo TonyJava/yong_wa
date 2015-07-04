@@ -1,5 +1,6 @@
 require 'sidekiq/web'
 Rails.application.routes.draw do
+  post '/rate' => 'rater#create', :as => 'rate'
   mount Sidekiq::Web => '/sidekiq'
   resources :histories
 
