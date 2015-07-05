@@ -55,7 +55,7 @@ set :rbenv_roles, :all
 #set :rbenv_custom_path, '/root/.rbenv'
 
 set :linked_files, %w{config/database.yml}
-set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 set :keep_releases, 5
 
