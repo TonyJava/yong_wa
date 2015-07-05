@@ -21,10 +21,11 @@ namespace :setup do
   end
 
   desc "sidekiq"
-    task :sidekiq_on do
-      on roles(:app) do
+    task sidekiq_on: :environment do
+      on roles(:app), in: :sequence do
         within "#{current_path}" do
-          execute "bundle exec rerun --background --dir app,db,lib --pattern '{**/*.rb}' -- bundle exec sidekiq --verbose"
+          #execute :bundle_sidekiq
+          execute "rerun --background --dir app,db,lib --pattern '{**/*.rb}' --sidekiq --verbose"
         end
       end
   end

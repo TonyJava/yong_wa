@@ -1,3 +1,4 @@
+
 # config valid only for Capistrano 3.1
 lock '3.2.1'
 
@@ -40,7 +41,7 @@ set :rake, "bundle exec rake"
 # set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
-# set :default_env, { path: "/opt/ruby/bin:$PATH" }
+#set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
 # set :keep_releases, 5
@@ -77,6 +78,34 @@ namespace :deploy do
       #   execute :rake, 'cache:clear'
       # end
     end
+  end
+
+end
+
+namespace :resque do
+
+  desc "init script"
+  task :setup do
+    deployments = File.join(File.dirname(__FILE__), "deployments")
+    Dir.chdir(deployments) do |path|
+      Dir.glob("{resque_worker}") do |file|
+        config = ERB.new(File.read(file))
+        base_name = File.basename(file)
+        put config.result(binding), File.join("tmp", base_name)
+        try_sudo "cp /tmp/#{file} /etc/init.d/#{base_name}"
+        try_sudo "chmod 755 /etc/init.d/#{base_name}"
+      end
+    end
+  end
+
+  namespace :worker do
+    task :start do
+      execute "/etc/init.d/resque_worker start"
+    end
+    task :stop do
+      execute "/etc/init.d/resque_worker stop"
+    end
+
   end
 
 end

@@ -27,8 +27,9 @@ class ChatServer
       @descriptors.delete(sock)
     else
       #receive info
-      binding.pry
+      #binding.pry
       print(sock.gets())
+      sock.write("received")
       str = sprintf("[%s|%s]: %s",
       sock.peeraddr[2], sock.peeraddr[1], sock.gets())
       broadcast_string( str, sock )

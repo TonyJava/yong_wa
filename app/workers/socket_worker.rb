@@ -1,6 +1,6 @@
 class SocketWorker
   include Sidekiq::Worker
-  include Sidekiq::Status::Worker # Important!
+  #include Sidekiq::Status::Worker # Important!
   sidekiq_options queue: :socket
 
   def perform
@@ -24,19 +24,19 @@ class SocketWorker
     return false
   end
 
-  def self.delete
-    queue = Sidekiq::Queue.new("Socket")
-    queue.each do |job|
-      job.delete
-    end
-  end
+  # def self.delete
+  #   queue = Sidekiq::Queue.new("Socket")
+  #   queue.each do |job|
+  #     job.delete
+  #   end
+  # end
 
-  def cancelled?
-    Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
-  end
+  # def cancelled?
+  #   Sidekiq.redis {|c| c.exists("cancelled-#{jid}") }
+  # end
 
-  def self.cancel!(jid)
-    Sidekiq.redis {|c| c.setex("cancelled-#{jid}", 86400, 1) }
-  end
+  # def self.cancel!(jid)
+  #   Sidekiq.redis {|c| c.setex("cancelled-#{jid}", 86400, 1) }
+  # end
     
 end

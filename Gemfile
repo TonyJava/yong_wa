@@ -73,6 +73,8 @@ end
 gem 'sidekiq'
 gem 'sidekiq-status'
 gem 'sinatra', :require => nil
+gem 'resque'
+gem 'daemon-spawn', :require => 'daemon_spawn'
 #rerun
 gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]

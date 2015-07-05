@@ -19,7 +19,7 @@ namespace :deploy do
   end
 
   before :deploy, "deploy:check_revision"
-  after :deploy, "deploy:restart"
+  after :deploy, "deploy:restart", "resque:setup", "resque:worker:start"
   after :rollback, "deploy:restart"
 end
 
