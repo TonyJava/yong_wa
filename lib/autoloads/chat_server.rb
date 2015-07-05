@@ -8,7 +8,7 @@ class ChatServer
     printf("Chatserver started on port %d\n", port)
     @descriptors.push( @serverSocket )
   end # initialize
-  def run
+  def run(logger)
     while 1
     res = select( @descriptors, nil, nil, nil )
     if res != nil then
@@ -22,19 +22,19 @@ class ChatServer
     if sock.eof? then
       str = sprintf("Client left %s:%s\n",
       sock.peeraddr[2], sock.peeraddr[1])
-      broadcast_string( str, sock )
+      #broadcast_string( str, sock )
+      print(str)
       sock.close
       @descriptors.delete(sock)
     else
       #receive info
       #binding.pry
-      print(sock.gets())
-      sock.write("received")
-      str = sprintf("[%s|%s]: %s",
-      sock.peeraddr[2], sock.peeraddr[1], sock.gets())
-      broadcast_string( str, sock )
-
-      # str = sprintf("%s", sock.gets())
+      str = sock.gets()
+      print(str)
+      #sock.write("received")
+      #str = sprintf("[%s|%s]: %s",sock.peeraddr[2], sock.peeraddr[1], sock.gets())
+      #broadcast_string( str, sock )
+      sock.write(str)
       # send_message_by_received_string(str, sock)
     end
 

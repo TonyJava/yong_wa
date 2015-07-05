@@ -5,7 +5,7 @@ class ResqueSocket
     logger = Logger.new(File.join(Rails.root, 'log', 'resque_socket.log'))
     logger.info "start"
     myChatServer = ChatServer.new( 2626 )
-    myChatServer.run
+    myChatServer.run(logger)
   end
 
   def self.is_port_open?

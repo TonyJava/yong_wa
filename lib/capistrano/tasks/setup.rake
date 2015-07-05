@@ -54,4 +54,32 @@ namespace :setup do
    end
   end
 
+  desc "init script"
+  task :resque_setup do
+    on roles(:app) do
+      #deployments = File.join(File.dirname(__FILE__), "deployments")
+      deployments = File.join("#{current_path}", "config")
+      #Dir.chdir(deployments) do |path|
+      within "#{deployments}" do
+        Dir.glob("{resque_worker}") do |file|
+          config = ERB.new(File.read(file))
+          base_name = File.basename(file)
+          put config.result(binding), File.join("tmp", base_name)
+          try_sudo "cp /tmp/#{file} /etc/init.d/#{base_name}"
+          try_sudo "chmod 755 /etc/init.d/#{base_name}"
+        end
+      end
+    end
+  end
+
+  namespace :worker do
+    task :start do
+      execute "./etc/init.d/resque_worker start"
+    end
+    task :stop do
+      execute "./etc/init.d/resque_worker stop"
+    end
+
+  end
+
 end
