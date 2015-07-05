@@ -20,6 +20,15 @@ namespace :setup do
     end
   end
 
+  desc "sidekiq"
+    task :sidekiq_on do
+      on roles(:app) do
+        within "#{current_path}" do
+          execute "bundle exec rerun --background --dir app,db,lib --pattern '{**/*.rb}' -- bundle exec sidekiq --verbose"
+        end
+      end
+  end
+
   task :upload_nginx do
     on roles(:app) do
       upload! StringIO.new(File.read("config/nginx.conf")), "#{current_path}/config/nginx.conf"
