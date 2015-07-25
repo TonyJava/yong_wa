@@ -41,10 +41,10 @@ set :pty, true
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
-#set :default_env, { path: "/opt/ruby/bin:$PATH" }
+set :default_env, { path: "/opt/ruby/bin:$PATH" }
 
 # Default value for keep_releases is 5
-# set :keep_releases, 5
+set :keep_releases, 5
 
 # rbenv
 set :rbenv_type, :user
@@ -106,7 +106,7 @@ namespace :resque do
         execute :sudo, "/etc/init.d/resque_worker start"
       end
     end
-    
+
     task :stop do
       on roles(:app) do
         execute :sudo, "/etc/init.d/resque_worker stop"
