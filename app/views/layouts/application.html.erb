@@ -74,10 +74,10 @@ $( document ).ready(function() {
     $(this).css({
     color: '#ff0000'
     });
-    <% if ResqueSocket.is_port_open? %>
-    <% #   SocketWorker.perform_async %>
-    <%    Resque.enqueue(ResqueSocket) %>
-    <% end %>
+    if (<%= ResqueSocket.is_port_open? %> == true) {
+      <% #   SocketWorker.perform_async %>
+      <%    Resque.enqueue(ResqueSocket) %>
+    }
   });
 
 });  

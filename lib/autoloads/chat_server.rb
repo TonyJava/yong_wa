@@ -7,6 +7,7 @@ class ChatServer
     @serverSocket.setsockopt( Socket::SOL_SOCKET, Socket::SO_REUSEADDR, 1 )
     printf("Chatserver started on port %d\n", port)
     @descriptors.push( @serverSocket )
+    @logger = Logger.new(File.join(Rails.root, 'log', 'resque_socket.log'))   
   end # initialize
   def run(logger)
     while 1
@@ -31,6 +32,7 @@ class ChatServer
       #binding.pry
       str = sock.gets()
       print(str)
+      @logger.info str
       #sock.write("received")
       #str = sprintf("[%s|%s]: %s",sock.peeraddr[2], sock.peeraddr[1], sock.gets())
       #broadcast_string( str, sock )

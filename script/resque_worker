@@ -10,6 +10,7 @@ class ResqueWorkerDaemon < DaemonSpawn::Base
   end
 
   def stop
+    @worker.try(:shutdown)
   end
 end
 

@@ -19,7 +19,13 @@
   <tbody>
     <% @histories.each do |history| %>
       <tr>
-        <td><%= history.device.series_code %></td>
+        <td>
+          <% if history.device %>
+          <%= history.device.series_code %>
+          <% else %>
+          <%= nil %>
+          <% end %>
+        </td>
         <td><%= history.data_type %></td>
         <td><%= history.data_content %></td>
         <td><%= history.location_code %></td>
