@@ -40,8 +40,9 @@ set :pty, true
 # Default value for linked_dirs is []
 set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
+#set :default_shell, '/bin/bash -l'
 # Default value for default_env is {}
-set :default_env, { path: "/opt/ruby/bin:$PATH" }
+#set :default_env, { path: "#{deploy_to}/current/bin:$PATH" }
 
 # Default value for keep_releases is 5
 set :keep_releases, 5
@@ -137,7 +138,9 @@ namespace :socket do
   desc "start socket service"
   task :start do
     on roles(:app) do
-      execute :sudo, "/etc/init.d/yong_wa_socket start"
+      within "#{current_path}" do
+        execute "/etc/init.d/yong_wa_socket start"
+      end
     end
   end
 
