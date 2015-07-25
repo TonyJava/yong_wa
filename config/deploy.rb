@@ -3,7 +3,7 @@
 lock '3.2.1'
 
 set :application, 'yong_wa'
-set :repo_url, 'git@github.com:lzhgamedev/yong_wa.git'
+set :repo_url, 'git@github-lzhgamedev:lzhgamedev/yong_wa.git'
 
 set :deploy_to, "/www/web/#{fetch(:application)}"
 set :deploy_user, "root"
