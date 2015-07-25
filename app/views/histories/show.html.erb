@@ -2,7 +2,11 @@
 
 <p>
   <strong>User device:</strong>
-  <%= @history.device.series_code %>
+  <% if @history.device %>
+    <%= @history.device.series_code %>
+  <% else %>
+    <%= nil %>
+  <% end %>
 </p>
 
 <p>
