@@ -73,7 +73,7 @@ end
 gem 'sidekiq'
 gem 'sidekiq-status'
 gem 'sinatra', :require => nil
-gem 'resque'
+gem 'resque',:require => 'resque/server'
 gem 'daemon-spawn', :require => 'daemon_spawn'
 #rerun
 gem 'rerun'

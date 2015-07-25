@@ -3,7 +3,7 @@
 lock '3.2.1'
 
 set :application, 'yong_wa'
-set :repo_url, 'git@github-lzhgamedev:lzhgamedev/yong_wa.git'
+set :repo_url, 'git@github.com:lzhgamedev/yong_wa.git'
 
 set :deploy_to, "/www/web/#{fetch(:application)}"
 set :deploy_user, "root"
@@ -32,13 +32,13 @@ set :rake, "bundle exec rake"
 # set :log_level, :debug
 
 # Default value for :pty is false
-# set :pty, true
+set :pty, true
 
 # Default value for :linked_files is []
 # set :linked_files, %w{config/database.yml}
 
 # Default value for linked_dirs is []
-# set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
+set :linked_dirs, %w{bin log tmp/pids tmp/cache tmp/sockets vendor/bundle public/system}
 
 # Default value for default_env is {}
 #set :default_env, { path: "/opt/ruby/bin:$PATH" }
@@ -110,6 +110,40 @@ namespace :resque do
 
   end
 
+end
+
+namespace :socket do
+
+  desc "setup socket file"
+  task :setup do
+    on roles(:app) do
+      within "#{current_path}" do
+        execute :sudo, "cp config/deployments/yong_wa_socket.sh /etc/init.d/yong_wa_socket"
+        execute :sudo, "chmod 755 /etc/init.d/yong_wa_socket"
+      end
+    end
+  end
+
+  desc "start socket service"
+  task :start do
+    on roles(:app) do
+      execute :sudo, "/etc/init.d/yong_wa_socket start"
+    end
+  end
+
+  desc "stop socket service"
+  task :stop do
+    on roles(:app) do
+      execute :sudo, "/etc/init.d/yong_wa_socket stop"
+    end
+  end
+
+  desc "show socket service status"
+  task :status do
+    on roles(:app) do
+      execute :sudo, "/etc/init.d/yong_wa_socket status"
+    end
+  end
 end
 
 require './config/boot'

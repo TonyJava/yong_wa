@@ -66,18 +66,23 @@ $( document ).ready(function() {
   var socket_open = <%= ResqueSocket.is_port_open? %>;
   if( !socket_open ) {
     $("a[id='socket']").css({
-      color: '#ff0000'
+      color: '#00dd00'
     });
   }
+
   $("a[id='socket']").click(function( event ) {
     event.preventDefault();
-    $(this).css({
-    color: '#ff0000'
+    $.ajax({
+      url: "/admin/logins/activate_socket",
+      type: "get",
+      success: function (data, status, xhr) {
+        if(data.active) {
+          $("a[id='socket']").css({
+            color: '#00dd00'
+          });
+        }
+      }
     });
-    if (<%= ResqueSocket.is_port_open? %> == true) {
-      <% #   SocketWorker.perform_async %>
-      <%    Resque.enqueue(ResqueSocket) %>
-    }
   });
 
 });  

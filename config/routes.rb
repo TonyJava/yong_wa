@@ -2,6 +2,7 @@ require 'sidekiq/web'
 Rails.application.routes.draw do
   post '/rate' => 'rater#create', :as => 'rate'
   mount Sidekiq::Web => '/sidekiq'
+  mount Resque::Server, :at => "/resque"
   resources :histories
 
   post 'functions/show_device'
@@ -22,6 +23,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :logins, only: [:new, :create, :destroy]
+    get 'logins/activate_socket'
     root 'logins#new'
   end
 
