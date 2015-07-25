@@ -87,27 +87,37 @@ namespace :resque do
   desc "init script"
   task :setup do
     on roles(:app) do
-      deployments = File.join(File.dirname(__FILE__), "deployments")
-      Dir.chdir(deployments) do |path|
-        Dir.glob("{resque_worker}") do |file|
-          config = ERB.new(File.read(file))
-          base_name = File.basename(file)
-          put config.result(binding), File.join("tmp", base_name)
-          try_sudo "cp /tmp/#{file} /etc/init.d/#{base_name}"
-          try_sudo "chmod 755 /etc/init.d/#{base_name}"
-        end
+      # deployments = File.join(File.dirname(__FILE__), "deployments")
+      # Dir.chdir(deployments) do |path|
+      #   Dir.glob("{resque_worker}") do |file|
+      #     config = ERB.new(File.read(file))
+      #     base_name = File.basename(file)
+      #     put config.result(binding), File.join("tmp", base_name)
+      within "#{current_path}" do
+        execute :sudo, "cp config/deployments/resque_worker.sh /etc/init.d/resque_worker"
+        execute :sudo, "chmod 755 /etc/init.d/resque_worker"
       end
     end
   end
 
   namespace :worker do
     task :start do
-      sudo "/etc/init.d/resque_worker start"
+      on roles(:app) do
+        execute :sudo, "/etc/init.d/resque_worker start"
+      end
     end
+    
     task :stop do
-      sudo "/etc/init.d/resque_worker stop"
+      on roles(:app) do
+        execute :sudo, "/etc/init.d/resque_worker stop"
+      end
     end
 
+    task :status do
+      on roles(:app) do
+        execute :sudo, "/etc/init.d/resque_worker status"
+      end
+    end
   end
 
 end

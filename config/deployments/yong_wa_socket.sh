@@ -7,9 +7,9 @@ current_path=/www/web/yong_wa/current
 start() {
   cd $current_path
   echo "deque all workers in queue"
-  bundle exec rails runner "Resque.dequeue(ResqueSocket)"
+  RAILS_ENV=production bundle exec rails runner "Resque.dequeue(ResqueSocket)"
   echo "enque a worker"
-  bundle exec rails runner "Resque.enqueue(ResqueSocket)"
+  RAILS_ENV=production bundle exec rails runner "Resque.enqueue(ResqueSocket)"
   if [[ $? -eq 0 ]]; then
     echo "OK"
   fi

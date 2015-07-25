@@ -1,22 +1,24 @@
 #!/bin/sh
 
+current_path=/www/web/yong_wa/current
+
 start() {
-  cd <%= current_path %>
+  cd $current_path
   RAILS_ENV=production bundle exec rails runner script/resque_worker start
 }
 
 stop() {
-  cd <%= current_path %>
+  cd $current_path
   RAILS_ENV=production bundle exec rails runner script/resque_worker stop
 }
 
 status() {
-  cd <%= current_path %>
+  cd $current_path
   RAILS_ENV=production bundle exec rails runner script/resque_worker status
 }
 
 restart() {
-  cd <%= current_path %>
+  cd $current_path
   RAILS_ENV=production bundle exec rails runner script/resque_worker restart
 }
 
