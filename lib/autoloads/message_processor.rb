@@ -1,5 +1,12 @@
 require "socket"
+
+
+
 class MessageProcessor
+
+  HEAD = "SG"
+
+  public
   def initialize(args)
     @@head = "SG"
     @@mid = "8800000015" 
@@ -8,34 +15,49 @@ class MessageProcessor
   # receive message
   def self.in_command(sock, str)
     #a = /(.)\*/.match(str)
-    a = str.split('*')
-    b = a[3]
-    c = b.split(',')
-    case c[0]
-    when 'LK'
-      response_keep_connect()
-    when 'UD'
-      response_report_geo(c[1])
-    when 'AL'
-      response_alarm_data(c[1])
+    str = str.strip
+    #binding.pry
+    begin
+      a = str.split('*')
+      device = a[1]
+      b = a[3]
+      c = b.split(',')
+      print c[0]
+      case c[0]
+      when 'LK'
+        response_keep_connect(sock, device)
+      when 'UD'
+        response_report_geo(sock, device, c[1])
+      when 'AL'
+        response_alarm_data(sock, device, c[1])
+      end
+
+    rescue Exception => e
+      sock.write("not valid")
     end
   end
 
-
-  def self.response_keep_connect(sock, str)
-    #TODO: send every 5 minutes
-    sock.write("SG*8800000015*0002*LK")
+  def self.test
+    "aaa"
   end
 
-  def self.response_report_geo(sock, str)
+
+  def self.response_keep_connect(sock, device)
+    #TODO: send every 5 minutes
+    print "response_keep_connect"
+    sock.write("#{HEAD}*#{device}*0002*LK")
+  end
+
+  def self.response_report_geo(sock, device, str)
     #TODO: update geo loc in database
     geo_status = str.split(',')
     geo_status
+    sock.write("geo ok!")
   end
 
-  def self.response_alarm_data(sock, str)
+  def self.response_alarm_data(sock, device, str)
     #TODO: update data in databse
-    sock.write("SG*8800000015*0002*AL")
+    sock.write("#{HEAD}*#{device}*0002*AL")
   end
 
   #send message

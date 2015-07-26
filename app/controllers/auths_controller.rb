@@ -106,7 +106,7 @@ class AuthsController < ApplicationController
       }
     else
       user = User.find_by(mobile: params[:mobile])
-      user.regenerate_auth_token!
+      user.regenerate_auth_token
 
       render :json => {
         msg: "login ok",

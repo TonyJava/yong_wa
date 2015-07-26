@@ -1,4 +1,6 @@
 require "socket"
+require "logger"
+#load "message_processor.rb"
 class ChatServer
 
   def initialize( port )
@@ -29,14 +31,21 @@ class ChatServer
       @descriptors.delete(sock)
     else
       #receive info
-      #binding.pry
+      
       str = sock.gets()
+      #binding.pry
       print(str)
       logger.info(str)
+      #sock.write(str)
+
+      #tt = MessageProcessor.test
+      #sock.write(MessageProcessor.test)
+      MessageProcessor.in_command(sock, str)
+
       #sock.write("received")
       #str = sprintf("[%s|%s]: %s",sock.peeraddr[2], sock.peeraddr[1], sock.gets())
       #broadcast_string( str, sock )
-      sock.write(str)
+      
       # send_message_by_received_string(str, sock)
     end
 
@@ -67,14 +76,19 @@ class ChatServer
   def accept_new_connection(logger)
     newsock = @serverSocket.accept
     @descriptors.push( newsock )
-    newsock.write("You're connected to the Ruby chatserver\n")
+    newsock.write("You're connected to the Yongwa Server\n")
     str = sprintf("Client joined %s:%s\n",
     newsock.peeraddr[2], newsock.peeraddr[1])
 
-    newsock.write(str)
+    #newsock.write(str)
     logger.info(str)
     #broadcast_string( str, newsock )
     #print(User.all.first.id)
     #print MessageProcessor.in_command("SG*8800000015*0002*LK")
   end # accept_new_connection
 end #server
+
+# logger = Logger.new('resque_socket_test.log')
+# logger.info "start"
+# myChatServer = ChatServer.new( 2628 )
+# myChatServer.run(logger)

@@ -5,7 +5,7 @@ set -e
 current_path=/www/web/yong_wa/current
 
 start() {
-  cd $current_path
+  #cd $current_path
   echo "deque all workers in queue"
   RAILS_ENV=production bundle exec rails runner "Resque.dequeue(ResqueSocket)"
   echo "enque a worker"

@@ -79,4 +79,6 @@ gem 'daemon-spawn', :require => 'daemon_spawn'
 gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
+gem 'rb-readline'
+
 gem 'letsrate'
