@@ -80,5 +80,6 @@ gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
 gem 'rb-readline'
+gem 'annotate', '~> 2.6.6'
 
 gem 'letsrate'

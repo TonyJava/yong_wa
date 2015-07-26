@@ -34,5 +34,15 @@
   <%= @history.data_stamp_address %>
 </p>
 
+<p>
+  <strong>Longitude:</strong>
+  <%= @history.lng %>
+</p>
+
+<p>
+  <strong>Latitude:</strong>
+  <%= @history.lat %>
+</p>
+
 <%= link_to 'Edit', edit_history_path(@history) %> |
 <%= link_to 'Back', histories_path %>
