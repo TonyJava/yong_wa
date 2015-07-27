@@ -22,7 +22,6 @@ class MessageProcessor
       device = a[1]
       b = a[3]
       c = b.split(',')
-      print c[0]
       case c[0]
       when 'LK'
         response_keep_connect(sock, device)
@@ -33,7 +32,7 @@ class MessageProcessor
       end
 
     rescue Exception => e
-      sock.write("not valid")
+      sock.write("not valid\r\n")
     end
   end
 
@@ -45,19 +44,19 @@ class MessageProcessor
   def self.response_keep_connect(sock, device)
     #TODO: send every 5 minutes
     print "response_keep_connect"
-    sock.write("#{HEAD}*#{device}*0002*LK")
+    sock.write("#{HEAD}*#{device}*0002*LK\r\n")
   end
 
   def self.response_report_geo(sock, device, str)
     #TODO: update geo loc in database
     geo_status = str.split(',')
     geo_status
-    sock.write("geo ok!")
+    sock.write("geo ok!\r\n")
   end
 
   def self.response_alarm_data(sock, device, str)
     #TODO: update data in databse
-    sock.write("#{HEAD}*#{device}*0002*AL")
+    sock.write("#{head}*#{device}*0002*AL\r\n")
   end
 
   #send message
@@ -131,7 +130,7 @@ class MessageProcessor
   private
 
   def concat_message(str)
-    "#{@@head}*#{@@mid}*#{str}"
+    "#{@@head}*#{@@mid}*#{str}\r\n"
   end
 
 end
