@@ -15,24 +15,32 @@ class MessageProcessor
   # receive message
   def self.in_command(sock, str)
     #a = /(.)\*/.match(str)
-    str = str.strip
+    str = str.chomp
     #binding.pry
     begin
       a = str.split('*')
       device = a[1]
       b = a[3]
-      c = b.split(',')
+      c = b.split(',', 2)
       case c[0]
       when 'LK'
-        response_keep_connect(sock, device)
+        response_keep_connect(sock, device, c[1])
       when 'UD'
         response_report_geo(sock, device, c[1])
+      when 'UD2'
+        response_report_geo_2(sock, device, c[1])
       when 'AL'
         response_alarm_data(sock, device, c[1])
+      when 'WAD'
+        response_address_data(sock, device, c[1])
+      when 'WG'
+        response_lat_lng_data(sock, device, c[1])
+      else
+        sock.write("current not valid\r\n")
       end
 
     rescue Exception => e
-      sock.write("not valid\r\n")
+      sock.write("not valid #{e.message}\r\n")
     end
   end
 
@@ -41,9 +49,18 @@ class MessageProcessor
   end
 
 
-  def self.response_keep_connect(sock, device)
+  def self.response_keep_connect(sock, device, str)
     #TODO: send every 5 minutes
     print "response_keep_connect"
+    #TODO
+    #1.SG*8800000015*0002*LK
+    #2.SG*8800000015*000D*LK,50,100,100
+    if str != nil
+      fields = str.split(',')
+      step_count = fields[0]
+      turn_count = fields[1]
+      battery_percent = fields[2]
+    end
     sock.write("#{HEAD}*#{device}*0002*LK\r\n")
   end
 
@@ -54,9 +71,35 @@ class MessageProcessor
     sock.write("geo ok!\r\n")
   end
 
+  def self.response_report_geo_2(sock, device, str)
+    #TODO: update geo loc in database
+    geo_status = str.split(',')
+    geo_status
+    sock.write("geo2 ok!\r\n")
+  end
+
   def self.response_alarm_data(sock, device, str)
     #TODO: update data in databse
-    sock.write("#{head}*#{device}*0002*AL\r\n")
+    sock.write("#{HEAD}*#{device}*0002*AL\r\n")
+  end
+
+  def self.response_address_data(sock, device, str)
+    #Todo: 相应语⾔言地址信息
+    fields = str.split(',')
+    languange = fields[0]
+    case languange
+    when 'CH'
+      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,中文\r\n")
+    when 'EN'
+      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,English\r\n")
+    else
+      sock.write("current not valid\r\n")
+    end
+  end
+
+  def self.response_lat_lng_data(sock, device, str)
+    #Todo: logic
+    sock.write("#{HEAD}*#{device}*0021*RG,BASE,22.571707,N,113.8613968,E\r\n")
   end
 
   #send message
