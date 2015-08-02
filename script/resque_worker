@@ -4,7 +4,7 @@ Rails.application.require_environment!
 
 class ResqueWorkerDaemon < DaemonSpawn::Base
   def start(args)
-    @worker = Resque::Worker.new('resque_socket') # 複数のworkerがある場合はカンマ区切りで指定
+    @worker = Resque::Worker.new('*') # 複数のworkerがある場合はカンマ区切りで指定
     @worker.verbose = true
     @worker.work
   end

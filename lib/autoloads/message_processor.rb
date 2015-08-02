@@ -2,29 +2,44 @@ require "socket"
 
 
 
+
 class MessageProcessor
 
   HEAD = "SG"
+  @@sides = 10
 
   public
+
   def initialize(args)
     @@head = "SG"
     @@mid = "8800000015" 
   end
+
+  def self.get_sides
+    @@sides
+  end
   
+
   # receive message
   def self.in_command(sock, str)
     #a = /(.)\*/.match(str)
-    str = str.chomp
+    str = str.strip
     #binding.pry
     begin
       a = str.split('*')
       device = a[1]
+
+      if device && !$socket_device[sock]
+        $socket_device[sock] = device
+        puts "connect new device: #{device}"
+      end
+
       b = a[3]
       c = b.split(',', 2)
       case c[0]
       when 'LK'
         response_keep_connect(sock, device, c[1])
+        #Resque.enqueue(ResqueTestSendMessage)
       when 'UD'
         response_report_geo(sock, device, c[1])
       when 'UD2'
@@ -104,76 +119,115 @@ class MessageProcessor
 
   #send message
 
+  def self.setup_positive_methods()
+    [
+      method(:set_data_upload_interval),
+      method(:set_center_number),
+      method(:set_assist_center_number),
+      method(:set_sos_number),
+      method(:set_language_time_zone),
+      method(:set_sos_alarm),
+      method(:set_battery_alarm),
+      method(:query_status),
+      method(:query_version),
+      method(:reset_client),
+      method(:active_gps)
+    ]
+  end
+
+  def self.setup_params()
+    [
+      {time: "2001-10-10"},
+      {number: "01023456789"},
+      {number: "01023456789"},
+      {number: "01023456789"},
+      {lang: "EN", time_zone: "UTC"},
+      {toggle: "0"},
+      {toggle: "0"},
+      {},
+      {},
+      {},
+      {}
+    ]
+  end
+
   #数据上传间隔
-  def self.set_data_upload_interval(sock, time)
-    str = "0009*" + time.to_s
-    sock.write(concat_message(str))
+  def self.set_data_upload_interval(device, params = {})
+    str = "0009*" + params[:time].to_s
+    send_message_to(device, str)
   end
 
   #中心号码设置
-  def self.set_center_number(sock, number)
-    str = "0012*CENTER," + number.to_s
-    sock.write(concat_message(str))
+  def self.set_center_number(device, params = {})
+    str = "0012*CENTER," + params[:number].to_s
+    send_message_to(device, str)
   end
 
   #辅助中心号码
-  def self.set_assist_center_number(sock, number)
-    str = "0011*SLAVE," + number.to_s
-    sock.write(concat_message(str))
+  def self.set_assist_center_number(device, params = {})
+    str = "0011*SLAVE," + params[:number].to_s
+    send_message_to(device, str)
   end
 
   #SOS中心号码
-  def self.set_sos_number(sock, number)
-    str = "0010*SOS1," + number.to_s
-    sock.write(concat_message(str))
+  def self.set_sos_number(device, params = {})
+    str = "0010*SOS1," + params[:number].to_s
+    send_message_to(device, str)  
   end
 
   #语言和时区设置
-  def self.set_language_time_zone(sock, lang, time_zone)
-    str = "0006*LZ," + lang.to_s + "," + time_zone.to_s
-    sock.write(concat_message(str))
+  def self.set_language_time_zone(device, params = {})
+    str = "0006*LZ," + params[:lang].to_s + "," + params[:time_zone].to_s
+    send_message_to(device, str)
   end
 
   #SOS短信报警
   #toggle: 0 off, 1 on
-  def self.set_sos_alarm(toggle)
-    str = "0008*SOSSMS," + toggle.to_s
-    sock.write(concat_message(str))
+  def self.set_sos_alarm(device, params = {})
+    str = "0008*SOSSMS," + params[:toggle].to_s
+    send_message_to(device, str)
   end
   #低电短信报警
-  def self.set_battery_alarm(toggle)
-    str = "0008*LOWBAT," + toggle.to_s
-    sock.write(concat_message(str))
+  def self.set_battery_alarm(device, params = {})
+    str = "0008*LOWBAT," + params[:toggle].to_s
+    send_message_to(device, str)
   end
 
   #手机参数
-  def self.query_status()
+  def self.query_status(device, params = {})
     str = "0002*TS"
-    sock.write(concat_message(str))
+    send_message_to(device, str)
   end
 
   #手机版本
-  def self.query_version()
+  def self.query_version(device, params = {})
     str = "0005*VERNO"
-    sock.write(concat_message(str))
+    send_message_to(device, str)
   end
 
   #重启
-  def self.reset_client()
+  def self.reset_client(device, params = {})
     str = "0005*RESET"
-    sock.write(concat_message(str))
+    send_message_to(device, str)
   end
 
   #定位指令
-  def self.active_gps()
+  def self.active_gps(device, params = {})
     str = "0002*CR"
-    sock.write(concat_message(str))
+    send_message_to(device, str)
   end
 
   private
 
-  def concat_message(str)
-    "#{@@head}*#{@@mid}*#{str}\r\n"
+  def self.concat_message(device, str)
+    "#{HEAD}*#{device}*#{str}\r\n"
+  end
+
+  def self.send_message_to(device, str)
+    sock = $socket_device.key(device)
+    if sock
+      sock.write(concat_message(device,str))
+    end
   end
 
 end
