@@ -157,9 +157,13 @@ class MessageProcessor
     languange = fields[0]
     case languange
     when 'CH'
-      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,中文\r\n")
+      str = "中文"
+      str = str.encode("gb2312")
+      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,#{str}\r\n")
     when 'EN'
-      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,English\r\n")
+      str = "English"
+      str = str.encode("gb2312")
+      sock.write("#{HEAD}*#{device}*000C*RAD,GPS,#{str}\r\n")
     else
       sock.write("current not valid\r\n")
     end
@@ -230,7 +234,7 @@ class MessageProcessor
     ]
   end
 
-  #数据上传间隔
+  #1 数据上传间隔
   def self.set_data_upload_interval(device, params = {})
     command = "UPLOAD," + params[:time].to_s
     len = format_num16(command.length)
@@ -243,9 +247,10 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
-  #中心号码设置
+  #2 中心号码设置
   def self.set_center_number(device, params = {})
-    str = "0012*CENTER," + params[:number].to_s
+    #params[:number]
+    str = compack_command("CENTER", params, [:number])
     send_message_to(device, str)
   end
 
@@ -254,9 +259,10 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
-  #辅助中心号码
+  #3 辅助中心号码
   def self.set_assist_center_number(device, params = {})
-    str = "0011*SLAVE," + params[:number].to_s
+    #params[:number]
+    str = compack_command("SLAVE", params, [:number])
     send_message_to(device, str)
   end
 
@@ -265,9 +271,9 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
-  #控制密码
+  #4控制密码
   def self.set_pw(device, params = {})
-    str = '0009*PW,' + params[:number].to_s
+    str = compack_command("PW", params, [:number])
     send_message_to(device, str)
   end
 
@@ -278,7 +284,7 @@ class MessageProcessor
 
   #5 拨打电话
   def self.make_call(device, params = {})
-    str = '0010*CALL,' + params[:number].to_s
+    str = compack_command("CALL", params, [:number])
     send_message_to(device, str)
   end
 
@@ -289,7 +295,8 @@ class MessageProcessor
 
   #6 发送短信
   def self.send_sms(device, params = {})
-    str = '001C*SMS,' + params[:number].to_s + "," + params[:content]
+    params[:content] = params[:content].encode("gb2312")
+    str = compack_command("SMS", params, [:number, :content])
     send_message_to(device, str)
   end
 
@@ -314,13 +321,13 @@ class MessageProcessor
     type = params[:sos_type].to_i
     case type
     when 1
-      str = "0010*SOS1," + params[:number].to_s
+      str = "0010*SOS1," + params[:sos_number1].to_s
     when 2
-      str = "0010*SOS2," + params[:number].to_s
+      str = "0010*SOS2," + params[:sos_number2].to_s
     when 3
-      str = "0010*SOS3," + params[:number].to_s
+      str = "0010*SOS3," + params[:sos_number3].to_s
     when 0
-      str = "0010*SOS," + params[:number_1].to_s + "," + params[:number_2].to_s + "," + params[:number_3].to_s
+      str = "0010*SOS," + params[:sos_number_1].to_s + "," + params[:sos_number_2].to_s + "," + params[:sos_number_3].to_s
     end
     send_message_to(device, str)  
   end
@@ -569,6 +576,15 @@ class MessageProcessor
 
   def self.format_num16(number)
     number.to_s(16).rjust(4, '0')
+  end
+
+  def self.compack_command(str, params = {}, filter = [])
+    command = str
+    filter.each do |value|
+      command += ",#{params[value.to_sym].to_s}"
+    end
+    len = format_num16(command.length)
+    "#{len}*#{command}"
   end
 
 end

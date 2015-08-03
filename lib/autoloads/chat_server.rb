@@ -55,7 +55,7 @@ class ChatServer
         end
       else
         puts "processing queues..."
-        @message_queue.process_test_messages
+        @message_queue.process_redis_messages
       end
      }
   end
