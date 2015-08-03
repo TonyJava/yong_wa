@@ -174,18 +174,44 @@ class MessageProcessor
 
   def self.setup_positive_methods()
     [
+      method(:none),
       method(:set_data_upload_interval),
       method(:set_center_number),
       method(:set_assist_center_number),
+      method(:set_pw),
+      method(:make_call),
+
+      method(:send_sms),
+      method(:monitor),
       method(:set_sos_number),
+      method(:remote_upgrade),
+      method(:set_ip),
+
+      method(:set_factory),
       method(:set_language_time_zone),
+      method(:query_google_url),
       method(:set_sos_alarm),
       method(:set_battery_alarm),
+
+      method(:set_apn),
+      method(:sms_control),
       method(:query_status),
       method(:query_version),
       method(:reset_client),
-      method(:active_gps)
+
+      method(:active_gps),
+      method(:blue_tooth_control),
+      method(:set_work_period),
+      method(:set_work_time),
+      method(:power_off),
+
+      method(:remove),
+      method(:query_pulse)
     ]
+  end
+
+  def self.none
+    
   end
 
   def self.setup_params()

@@ -143,6 +143,12 @@ class FunctionsController < ApplicationController
         code: 20403
       }
     else
+
+      command_id = params[:command_info].to_i
+      params_str = params[:params]
+      command = {device: device, command_id: command_id, params: params_str}.to_json
+      $redis.rpush("commands", command)
+
       history = History.new(device: device)
       history.save!
 
