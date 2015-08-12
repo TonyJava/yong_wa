@@ -39,7 +39,7 @@ class ChatServer
 
                 $socket_device.delete(sock)
               else
-                str = sock.gets()
+                str = sock.gets("\r\n").chomp("\r\n")
                 puts(str)
                 MessageProcessor.in_command(sock, str)
 
@@ -54,7 +54,7 @@ class ChatServer
           sock.close
         end
       else
-        puts "processing queues..."
+        #puts "processing queues..."
         @message_queue.process_redis_messages
       end
      }

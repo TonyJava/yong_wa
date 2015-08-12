@@ -15,8 +15,12 @@ class MessageProcessor
   # receive message
   def self.in_command(sock, str)
     #a = /(.)\*/.match(str)
-    str = str.strip
-    #binding.pry
+
+    # check voice message
+
+    #use chomp instead
+    #str = str.strip
+
     begin
       a = str.split('*')
       device = a[1]
@@ -29,6 +33,8 @@ class MessageProcessor
       b = a[3]
       c = b.split(',', 2)
       case c[0]
+      when 'TK'
+        response_voice_message(sock, device, c[1])
       when 'LK'
         response_keep_connect(sock, device, c[1])
         #Resque.enqueue(ResqueTestSendMessage)
@@ -559,6 +565,24 @@ class MessageProcessor
     pulse = str
     str = "PULSE ok"
     sock.write("#{str}\r\n")
+  end
+
+  def self.response_voice_message(sock, device, str)
+    begin
+      dir = "#{Rails.root}/public/voices/#{device}/receive"
+      if !File.directory?(dir)
+        FileUtils.mkdir_p(dir)
+      end
+      time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
+      file_name = File.join(dir, "#{time_str}.amr")
+      File.open(file_name, "wb") do |file|
+        file.write(str)
+      end
+      sock.write("#{1}\r\n")
+    rescue Exception => e
+      puts "#{e.message}"
+      sock.write("#{0}\r\n")
+    end
   end
 
   private
