@@ -81,7 +81,12 @@ namespace :deploy do
     end
   end
 
+  before :restart, :symlink_directories
+  task :symlink_directories do
+    execute "ln -nfs #{shared_path}/voices #{release_path}/public/voices"
+  end
 end
+
 
 namespace :resque do
 

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150726152346) do
+ActiveRecord::Schema.define(version: 20150815040946) do
 
   create_table "admin_manage_users", force: :cascade do |t|
     t.string   "user_name",  limit: 255
@@ -31,6 +31,7 @@ ActiveRecord::Schema.define(version: 20150726152346) do
     t.string   "mobile",      limit: 255
     t.string   "imei",        limit: 255
     t.string   "device_name", limit: 255
+    t.boolean  "active",      limit: 1
   end
 
   create_table "histories", force: :cascade do |t|

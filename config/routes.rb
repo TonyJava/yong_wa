@@ -13,7 +13,13 @@ Rails.application.routes.draw do
 
   post 'functions/send_command'
 
-  post  'functions/bob_dog'
+  post  'functions/get_storyInfo'
+
+  post 'functions/get_userInfo'
+
+  post 'functions/activate_device'
+
+  post 'functions/bind_device'
 
   resources :user_devices
 

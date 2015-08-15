@@ -13,6 +13,7 @@
 #  mobile      :string(255)
 #  imei        :string(255)
 #  device_name :string(255)
+#  active      :boolean
 #
 
 class Device < ActiveRecord::Base

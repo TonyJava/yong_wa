@@ -7,6 +7,7 @@
     <tr>
       <th>Device Id</th>
       <th>Device name</th>
+      <th>Device state</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -16,6 +17,7 @@
       <tr>
         <td><%= device.id %></td>
         <td><%= device.series_code %></td>
+        <td><%= device.active %></td>
         <td><%= link_to 'Show', device %></td>
         <td><%= link_to 'Edit', edit_device_path(device) %></td>
         <td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' } %></td>

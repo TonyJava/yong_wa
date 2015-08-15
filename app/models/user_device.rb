@@ -8,6 +8,11 @@
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
 #
+# Indexes
+#
+#  index_user_devices_on_device_id  (device_id)
+#  index_user_devices_on_user_id    (user_id)
+#
 
 class UserDevice < ActiveRecord::Base
   belongs_to :user

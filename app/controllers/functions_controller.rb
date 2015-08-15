@@ -161,10 +161,104 @@ class FunctionsController < ApplicationController
 
   end
 
-  def bob_dog
-    path = File.expand_path('public/Bobdog.xml', Rails.root)
-    file = File.read(path)
-    render json: Hash.from_xml(file).to_json
+  def get_storyInfo
+    if User.token_valid?(params[:token])
+      path = File.expand_path('public/Bobdog.xml', Rails.root)
+      file = File.read(path)
+      render json: {
+        code: 2,
+        msg: "success",
+        data: Hash.from_xml(file).to_json
+      }
+    else
+      render json: {
+        code: 0,
+        msg: "invalid token",
+        data: nil
+      }
+    end
+  end
+
+  def get_userInfo
+    user = User.find_by(mobile: params[:mobile], auth_token: params[:token])
+    if !user
+      msg = User.token_valid?(params[:token]) ? "user is not existed" : "token is not valid"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/get_userInfo",
+        code: 0,
+        data: nil
+      }
+    else
+      devices_info = []
+      devices = user.user_device
+      devices.each do |d|
+        devices_info << {deviceId: d.series_code, state: d.active == true}
+      end
+      render :json => {
+        msg: "success",
+        request: "POST/functions/get_userInfo",
+        code: 1,
+        data: {
+          personInfo: {
+            name: user.mobile,
+            mobile: user.mobile,
+            password: user.password
+          },
+          devices: devices_info
+        }
+      }
+    end
+  end
+  # deviceid <-> devicemobile
+  def activate_device
+    device = Device.find_by(series_code: params[:deviceid])
+    if !Device.exist?(params[:deviceid])
+      render :json => {
+        msg: "device not exist",
+        request: "POST/functions/activate_device",
+        code: 0
+      }   
+    else
+      error = send_server_info_to_watch(params[:devicemobile])
+      if error.to_i == 0
+        device.update(mobile: params[:devicemobile])
+        render :json => {
+          msg: "activate device ok",
+          request: "POST/functions/activate_device",
+          code: 1
+        }
+      else
+        render :json => {
+          msg: "send message to device fail",
+          request: "POST/functions/activate_device",
+          code: 0
+        }
+      end
+    end
+  end
+
+  # user <-> device
+  def bind_device
+    user = User.find_by(mobile: params[:mobile], auth_token: params[:token])
+    if !user
+      msg = User.token_valid?(params[:token]) ? "user is not existed" : "token is not valid"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/bind_device",
+        code: 0
+      }
+    else
+      device = Device.find_by(series_code: params[:deviceid])
+      user_device = UserDevice.new(user: user, device: device)
+      user_device.save!
+
+      render :json => {
+        msg: "bind_device ok",
+        request: "POST/functions/bind_device",
+        code: 1
+      }
+    end
   end
 
 end

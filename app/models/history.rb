@@ -14,6 +14,10 @@
 #  lng                :decimal(9, 6)
 #  lat                :decimal(9, 6)
 #
+# Indexes
+#
+#  index_histories_on_device_id  (device_id)
+#
 
 class History < ActiveRecord::Base
   belongs_to :device

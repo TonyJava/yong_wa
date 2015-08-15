@@ -568,7 +568,9 @@ class MessageProcessor
   end
 
   def self.response_voice_message(sock, device, str)
+    #SG*8800000015*2962*TK,1,1,2950,#!AMR
     begin
+      str = str.split(",", 4)[3]
       dir = "#{Rails.root}/public/voices/#{device}/receive"
       if !File.directory?(dir)
         FileUtils.mkdir_p(dir)

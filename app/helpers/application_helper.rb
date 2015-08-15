@@ -35,4 +35,18 @@ module ApplicationHelper
     return JSON.parse(res.body, symbolize_names: true)[:error]
   end
 
+  def send_server_info_to_watch(mobile)
+    uri = URI('http://sms-api.luosimao.com/v1/send.json')
+    req = Net::HTTP::Post.new(uri)
+    req.set_form_data("mobile" => mobile, "message" => "120.25.212.225:2626")
+    req.basic_auth('api','key-810cec56574191d135b1d1e7cf83a4e4')
+    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(req)
+    end
+
+    logger.debug "#{res.body}"
+
+    return JSON.parse(res.body, symbolize_names: true)[:error]
+  end
+
 end
