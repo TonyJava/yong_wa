@@ -22,7 +22,7 @@ class MessageProcessor
     #str = str.strip
 
     begin
-      a = str.split('*')
+      a = str.split('*', 4)
       device = a[1]
 
       if device && !$socket_device[sock]

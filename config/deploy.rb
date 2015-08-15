@@ -83,7 +83,9 @@ namespace :deploy do
 
   before :restart, :symlink_directories
   task :symlink_directories do
-    execute "ln -nfs #{shared_path}/voices #{release_path}/public/voices"
+    on roles(:app) do
+      execute "ln -nfs #{shared_path}/voices #{release_path}/public/voices"
+    end
   end
 end
 
