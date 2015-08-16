@@ -1,3 +1,4 @@
+#coding: utf-8
 require "socket"
 
 
@@ -335,6 +336,15 @@ class MessageProcessor
     when 0
       str = "0010*SOS," + params[:sos_number_1].to_s + "," + params[:sos_number_2].to_s + "," + params[:sos_number_3].to_s
     end
+    device_model = Device.find_by(series_code: device)
+
+    old_sos_info = device_model.get_config_field(:sos)
+    sos_info = []
+    sos_info[0] =  params[:sos_number1].to_s || old_sos_info[0]
+    sos_info[1] =  params[:sos_number2].to_s || old_sos_info[1]
+    sos_info[2] =  params[:sos_number3].to_s || old_sos_info[2]
+    device_model.set_config_field(:sos, sos_info)
+
     send_message_to(device, str)  
   end
 
@@ -404,6 +414,11 @@ class MessageProcessor
   #14 SOS短信报警
   #toggle: 0 off, 1 on
   def self.set_sos_alarm(device, params = {})
+    device_model = Device.find_by(series_code: device)
+    old_sms_info = device_model.get_config_field(:SMSSettings)
+    old_sms_info[1][:state] = params[:toggle].to_s
+    device_model.set_config_field(:SMSSettings, old_sms_info)
+
     str = "0008*SOSSMS," + params[:toggle].to_s
     send_message_to(device, str)
   end
@@ -415,6 +430,11 @@ class MessageProcessor
 
   #15 低电短信报警
   def self.set_battery_alarm(device, params = {})
+    device_model = Device.find_by(series_code: device)
+    old_sms_info = device_model.get_config_field(:SMSSettings)
+    old_sms_info[0][:state] = params[:toggle].to_s
+    device_model.set_config_field(:SMSSettings, old_sms_info)
+
     str = "0008*LOWBAT," + params[:toggle].to_s
     send_message_to(device, str)
   end

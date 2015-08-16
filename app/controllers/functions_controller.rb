@@ -29,7 +29,8 @@ class FunctionsController < ApplicationController
           weight: device.weight,
           mobile: device.mobile,
           imei: device.imei
-        }
+        },
+        device_config: device.get_config
       }
     end
 
@@ -146,7 +147,7 @@ class FunctionsController < ApplicationController
 
       command_id = params[:command_info].to_i
       params_str = params[:params]
-      command = {device: device, command_id: command_id, params: params_str}.to_json
+      command = {device: series_code, command_id: command_id, params: params_str}.to_json
       $redis.rpush("commands", command)
 
       history = History.new(device: device)

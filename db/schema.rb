@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150815040946) do
+ActiveRecord::Schema.define(version: 20150816115436) do
 
   create_table "admin_manage_users", force: :cascade do |t|
     t.string   "user_name",  limit: 255
@@ -22,8 +22,8 @@ ActiveRecord::Schema.define(version: 20150815040946) do
 
   create_table "devices", force: :cascade do |t|
     t.string   "series_code", limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.string   "sex",         limit: 255
     t.string   "birth",       limit: 255
     t.string   "height",      limit: 255
@@ -32,6 +32,7 @@ ActiveRecord::Schema.define(version: 20150815040946) do
     t.string   "imei",        limit: 255
     t.string   "device_name", limit: 255
     t.boolean  "active",      limit: 1
+    t.text     "config_info", limit: 65535
   end
 
   create_table "histories", force: :cascade do |t|

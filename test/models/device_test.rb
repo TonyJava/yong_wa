@@ -14,6 +14,7 @@
 #  imei        :string(255)
 #  device_name :string(255)
 #  active      :boolean
+#  config_info :text(65535)
 #
 
 require 'test_helper'
