@@ -144,7 +144,7 @@ class Device < ActiveRecord::Base
 
   def get_config_field(key)
     info = self.config_info || DEFAULT_CONFIG.to_json
-    hash_values = JSON.parse(config_info, symbolize_names: true)
+    hash_values = JSON.parse(info, symbolize_names: true)
     hash_values[key.to_sym]
   end
 

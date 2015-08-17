@@ -169,8 +169,8 @@ class FunctionsController < ApplicationController
     else
 
       command_id = params[:command_info].to_i
-      params_str = params[:params]
-      command = {device: series_code, command_id: command_id, params: params_str}.to_json
+      params_str = params[:params_str]
+      command = {device: device.series_code, command_id: command_id, params: params_str}.to_json
       $redis.rpush("commands", command)
 
       history = History.new(device: device)
