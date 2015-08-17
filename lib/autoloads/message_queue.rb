@@ -13,22 +13,26 @@ class MessageQueue
   def process_redis_messages
     #$redis.rpush("commands", command)
     loop {
-      command = $redis.rpop("commands")
-      if command == nil
-        break
-      end
-      puts "command: #{command}"
-      #parse 
-      command = JSON.parse(command, symbolize_names: true)
-      device = command[:device].to_s
-      command_id = command[:command_id].to_i
-      params = eval(command[:params])  #hash
+      begin
+        command = $redis.rpop("commands")
+        if command == nil
+          break
+        end
+        puts "command: #{command}"
+        #parse 
+        command = JSON.parse(command, symbolize_names: true)
+        device = command[:device].to_s
+        command_id = command[:command_id].to_i
+        params = eval(command[:params])  #hash
 
-      method_obj = @methods[command_id]
-      next if method_obj == nil
-      
-      method_obj.call(device, params)
-      puts "#{device} call #{method_obj}"
+        method_obj = @methods[command_id]
+        next if method_obj == nil 
+
+        puts "#{device} call #{method_obj}"
+        method_obj.call(device, params)
+      rescue Exception => e
+        puts e.message
+      end
     }
   end
 

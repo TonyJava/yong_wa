@@ -11,6 +11,8 @@ Rails.application.routes.draw do
 
   post 'functions/show_history'
 
+  post 'functions/show_tracking'
+
   post 'functions/send_command'
 
   post  'functions/get_storyInfo'

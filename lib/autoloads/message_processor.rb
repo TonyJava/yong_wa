@@ -141,15 +141,21 @@ class MessageProcessor
 
   def self.response_report_geo(sock, device, str)
     #TODO: update geo loc in database
-    geo_status = str.split(',')
-    geo_status
+    #geo_status = str.split(',')
+    #geo_status
+    device_model = Device.find_device(device)
+    device_model.add_tracking_record_geo(str)
+
     sock.write("geo ok!\r\n")
   end
 
   def self.response_report_geo_2(sock, device, str)
     #TODO: update geo loc in database
-    geo_status = str.split(',')
-    geo_status
+    #geo_status = str.split(',')
+    #geo_status
+    device_model = Device.find_device(device)
+    device_model.add_tracking_record_geo(str)
+
     sock.write("geo2 ok!\r\n")
   end
 

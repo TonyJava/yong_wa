@@ -70,8 +70,31 @@ class FunctionsController < ApplicationController
 
   end
 
-  def show_history
+  def show_tracking
+    device = Device.find_by(series_code: params[:device])
+    if !User.token_valid?(params[:token])
+      render :json => {
+        msg: "show tracking code error",
+        request: "POST/functions/show_tracking",
+        code: 0
+      }
+    elsif device == nil
+      render :json => {
+        msg: "show tracking code error",
+        request: "POST/functions/show_tracking",
+        code: 0
+      }
+    else
+      render :json => {
+        msg: "show tracking ok",
+        request: "POST/functions/show_tracking",
+        code: 1,
+        data: device.get_tracking_record(params[:begin], params[:end])
+      }
+    end
+  end
 
+  def show_history
     device = Device.find_by(series_code: params[:device])
     if !User.token_valid?(params[:token])
       render :json => {
@@ -137,7 +160,7 @@ class FunctionsController < ApplicationController
         request: "POST/functions/send_command",
         code: 20402
       }
-    elsif (params[:command_info] == nil || params[:command_info].to_i < ApplicationHelper::Command::TELEPHONE || params[:command_info].to_i > ApplicationHelper::Command::CHECK_LOST)
+    elsif (params[:command_info] == nil)
       render :json => {
         msg: "send command code error",
         request: "POST/functions/send_command",
