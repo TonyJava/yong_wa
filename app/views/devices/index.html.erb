@@ -9,6 +9,7 @@
       <th>Device name</th>
       <th>Device state</th>
       <th>Device config</th>
+      <th>Device mobile</th>
       <th colspan="3"></th>
     </tr>
   </thead>
@@ -20,6 +21,7 @@
         <td><%= device.series_code %></td>
         <td><%= device.active %></td>
         <td><%= device.config_info %></td>
+        <td><%= device.mobile %></td>
         <td><%= link_to 'Show', device %></td>
         <td><%= link_to 'Edit', edit_device_path(device) %></td>
         <td><%= link_to 'Destroy', device, method: :delete, data: { confirm: 'Are you sure?' } %></td>
