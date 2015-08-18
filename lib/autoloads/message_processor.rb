@@ -108,6 +108,15 @@ class MessageProcessor
         response_remove(sock, device, c[0])
       when 'PULSE'
         response_pulse(sock, device, c[1])
+      when 'FIND'
+        response_find_watch(sock, device, c[0])
+      when 'WORKMODE'
+        response_set_work_mode(sock, device, c[0])
+      when 'WORK2'
+        response_weekend_period(sock, device, c[0])
+      when 'PHB'
+      when 'PHB2'
+        response_set_messanger(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -221,9 +230,26 @@ class MessageProcessor
       method(:set_work_period),
       method(:set_work_time),
       method(:power_off),
-
+      #26
       method(:remove),
-      method(:query_pulse)
+      method(:query_pulse),
+      method(:none),
+      method(:find_watch),
+      method(:none),
+      #31
+      method(:none),
+      method(:none),
+      method(:none),
+      method(:none),
+      method(:none),
+      #36
+      method(:set_messanger),
+      method(:none),
+      method(:none),
+      method(:none),
+      method(:set_work_mode),
+      #41
+      method(:set_weekend_period),
     ]
   end
 
@@ -591,6 +617,59 @@ class MessageProcessor
     pulse = str
     str = "PULSE ok"
     sock.write("#{str}\r\n")
+  end
+
+  #29 寻找手表
+  def self.find_watch(device, params = {})
+    str = "0004*FIND"
+    send_message_to(device, str)
+  end
+
+  def self.response_find_watch(sock, device, str)
+    str = "FIND ok"
+    sock.write("#{str}\r\n")
+  end
+
+  #36 设置电话本
+  def self.set_messanger(device, params = {})
+    case params[:type].to_i
+    when 0
+      command = "PHB," + params[:messanger_info].to_s
+    when 1
+      command = "PHB2," + params[:messanger_info].to_s
+    end
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)
+  end
+
+  def self.response_set_messanger(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n")
+  end
+
+  #40 设置工作模式
+  def self.set_work_mode(device, params = {})
+    str = "0010*WORKMODE," + params[:work_mode].to_s
+    send_message_to(device, str)
+  end
+
+  def self.response_set_work_mode(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n")
+  end
+
+  #41 设置周末时间段
+  def self.set_weekend_period(device, params = {})
+    command = "WORK2," + params[:period].to_s
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)
+  end
+
+  def self.response_weekend_period(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
   end
 
   def self.response_voice_message(sock, device, str)
