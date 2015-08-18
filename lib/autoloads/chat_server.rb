@@ -51,7 +51,9 @@ class ChatServer
 
         rescue Exception => e
           puts "exception! : #{e.message}"
-          sock.close
+          if sock != @serverSocket
+            sock.close
+          end
         end
       else
         #puts "processing queues..."

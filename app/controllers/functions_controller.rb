@@ -246,7 +246,7 @@ class FunctionsController < ApplicationController
     else
       error = send_server_info_to_watch(params[:devicemobile])
       if error.to_i == 0
-        device.update(mobile: params[:devicemobile])
+        device.update(mobile: params[:devicemobile], active: true)
         render :json => {
           msg: "activate device ok",
           request: "POST/functions/activate_device",
@@ -274,8 +274,10 @@ class FunctionsController < ApplicationController
       }
     else
       device = Device.find_by(series_code: params[:deviceid])
-      user_device = UserDevice.new(user: user, device: device)
-      user_device.save!
+      if device == nil
+        user_device = UserDevice.new(user: user, device: device)
+        user_device.save!
+      end
 
       render :json => {
         msg: "bind_device ok",
