@@ -346,9 +346,9 @@ class MessageProcessor
 
     old_sos_info = device_model.get_config_field(:sos)
     sos_info = []
-    sos_info[0] =  params[:sos_number1].to_s || old_sos_info[0]
-    sos_info[1] =  params[:sos_number2].to_s || old_sos_info[1]
-    sos_info[2] =  params[:sos_number3].to_s || old_sos_info[2]
+    sos_info[0] =  params[:sos_number1] || old_sos_info[0]
+    sos_info[1] =  params[:sos_number2] || old_sos_info[1]
+    sos_info[2] =  params[:sos_number3] || old_sos_info[2]
     device_model.set_config_field(:sos, sos_info)
 
     send_message_to(device, str)  
