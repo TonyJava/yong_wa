@@ -185,6 +185,30 @@ class FunctionsController < ApplicationController
 
   end
 
+  def update_device_config
+    device = Device.find_by(series_code: params[:deviceId])
+    if !User.token_valid?(params[:token])
+      render :json => {
+        msg: "send command code error not valid token",
+        request: "POST/functions/update_device_config",
+        code: 0
+      }
+    elsif device == nil
+      render :json => {
+        msg: "send command code error not valid device",
+        request: "POST/functions/update_device_config",
+        code: 0
+      }
+    else
+      MessageProcessor.process_device_config(params[:deviceId], params)
+      render :json => {
+        msg: "update device config ok",
+        request: "POST/functions/update_device_config",
+        code: 10000
+      }
+    end
+  end
+
   def get_storyInfo
     if User.token_valid?(params[:token])
       path = File.expand_path('public/Bobdog.xml', Rails.root)
@@ -285,6 +309,14 @@ class FunctionsController < ApplicationController
         code: 1
       }
     end
+  end
+
+  def get_voice_file
+    
+  end
+
+  def send_voice_file
+    
   end
 
 end

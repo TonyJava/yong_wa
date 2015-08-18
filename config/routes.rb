@@ -15,6 +15,8 @@ Rails.application.routes.draw do
 
   post 'functions/send_command'
 
+  post 'functions/update_device_config'
+
   post  'functions/get_storyInfo'
 
   post 'functions/get_userInfo'

@@ -11,7 +11,61 @@ class MessageProcessor
   def initialize(args)
     @@head = "SG"
     @@mid = "8800000015" 
-  end  
+  end
+
+  def self.process_device_config(device, params = {})
+    device_model = Device.find_by(series_code: device)
+    if params[:sos]
+      set_sos_number(device, {sos_type: 0, sos_number1: params[:sos][0], sos_number2: params[:sos][1], sos_number3: params[:sos][2]})
+      device_model.set_config_field(:sos, params[:sos])
+    end
+
+    if params[:monitor]
+      monitor(device, {monitor: params[:monitor]})
+      device_model.set_config_field(:monitor, params[:monitor])
+    end
+
+    if params[:work_mode]
+      set_work_mode(device, {work_mode: params[:work_mode]})
+      device_model.set_config_field(:work_mode, params[:work_mode])
+    end
+
+    if params[:freeTime]
+      set_free_period(device, {period: params[:freeTime].to_s.delete("[]") } )
+      device_model.set_config_field(:freeTime, params[:freeTime])
+    end
+
+    if params[:weekendPositioning]
+      set_weekend_period(device, {period: params[:weekendPositioning].to_s.delete("[]")})
+      device_model.set_config_field(:weekendPositioning, params[:weekendPositioning])
+    end
+
+    if params[:lowPowerWarning]
+      set_battery_alarm(device, {toggle: params[:lowPowerWarning]})
+      device_model.set_config_field(:lowPowerWarning, params[:lowPowerWarning])
+    end
+
+    if params[:sosWarning]
+      set_sos_alarm(device, {toggle: params[:sosWarning]})
+      device_model.set_config_field(:sosWarning, params[:sosWarning])
+    end
+
+    if params[:findWatch]
+      if params[:findWatch].to_i == 1
+        find_watch(device, {})
+      end
+      device_model.set_config_field(:findWatch, params[:findWatch])
+    end
+
+    if params[:closeWatch]
+      if params[:closeWatch].to_i == 1
+        power_off(device, {})
+      end
+      device_model.set_config_field(:closeWatch, params[:closeWatch])
+    end
+
+    History.create(device: device_model, data_content: params.to_s)
+  end
 
   # receive message
   def self.in_command(sock, str)
@@ -117,6 +171,8 @@ class MessageProcessor
       when 'PHB'
       when 'PHB2'
         response_set_messanger(sock, device, c[0])
+      when 'SILENCETIME'
+        response_free_period(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -446,10 +502,10 @@ class MessageProcessor
   #14 SOS短信报警
   #toggle: 0 off, 1 on
   def self.set_sos_alarm(device, params = {})
-    device_model = Device.find_by(series_code: device)
-    old_sms_info = device_model.get_config_field(:SMSSettings)
-    old_sms_info[1][:state] = params[:toggle].to_s
-    device_model.set_config_field(:SMSSettings, old_sms_info)
+    # device_model = Device.find_by(series_code: device)
+    # old_sms_info = device_model.get_config_field(:SMSSettings)
+    # old_sms_info[1][:state] = params[:toggle].to_s
+    # device_model.set_config_field(:SMSSettings, old_sms_info)
 
     str = "0008*SOSSMS," + params[:toggle].to_s
     send_message_to(device, str)
@@ -462,10 +518,10 @@ class MessageProcessor
 
   #15 低电短信报警
   def self.set_battery_alarm(device, params = {})
-    device_model = Device.find_by(series_code: device)
-    old_sms_info = device_model.get_config_field(:SMSSettings)
-    old_sms_info[0][:state] = params[:toggle].to_s
-    device_model.set_config_field(:SMSSettings, old_sms_info)
+    # device_model = Device.find_by(series_code: device)
+    # old_sms_info = device_model.get_config_field(:SMSSettings)
+    # old_sms_info[0][:state] = params[:toggle].to_s
+    # device_model.set_config_field(:SMSSettings, old_sms_info)
 
     str = "0008*LOWBAT," + params[:toggle].to_s
     send_message_to(device, str)
@@ -617,6 +673,19 @@ class MessageProcessor
     pulse = str
     str = "PULSE ok"
     sock.write("#{str}\r\n")
+  end
+
+  #28 免打扰
+  def self.set_free_period(device, params = [])
+    command = "SILENCETIME," + params[:period].to_s
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)
+  end
+
+  def self.response_free_period(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
   end
 
   #29 寻找手表

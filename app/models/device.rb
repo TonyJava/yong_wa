@@ -30,81 +30,49 @@ class Device < ActiveRecord::Base
           "13000003434"
       ],
 
-    communicationRecord: [
+    babyPhoneNumber: [
       {
         name: "伙伴一",
-        mobile: "18565739316"
+        value: "18565739316"
         },
       {
         name: "伙伴二",
-        mobile: "18565739316"
+        value: "18565739316"
         },
       {
         name: "伙伴三",
-        mobile: "18565739316"
+        value: "18565739316"
         } 
       ],
 
-    workingMode: {
-      description: "正常模式:10分钟/次",
-      code: "1"
-    },
+    monitor: "1",
+    workMode: "0",
 
     freeTime: [
-        {
-          beginTime: "00:00",
-          endTime: "09:00"
-          },
-        {
-          beginTime: "14:00",
-          endTime: "15:00"
-          },
-        {
-          beginTime: "20:00",
-          endTime: "21:00"
-          }
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30"
       ],
 
     schoolPositioning: [
-        {
-          beginTime: "00:00",
-          endTime: "09:00"
-          },
-        {
-          beginTime: "14:00",
-          endTime: "15:00"
-          },
-        {
-          beginTime: "20:00",
-          endTime: "21:00"
-          }
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30"
       ],
 
     weekendPositioning: [
-        {
-          beginTime: "00:00",
-          endTime: "09:00"
-          },
-        {
-          beginTime: "14:00",
-          endTime: "15:00"
-          },
-        {
-          beginTime: "20:00",
-          endTime: "21:00"
-        }
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30",
+        "21:10-7:30"
       ],
 
-    SMSSettings: [
-      {
-        name: "低电提醒",
-        state: "1"
-        },
-      {
-        name: "SOS提醒",
-        state: "1"
-      }
-    ]
+    lowPowerWarning: "0",
+    sosWarning: "0",
+    findWatch: "1",
+    closeWatch: "1"
   }
 
   DEFAULT_TRACKING_RECORD = [
@@ -198,6 +166,13 @@ class Device < ActiveRecord::Base
 
   def self.find_device(device_str)
     Device.find_by(series_code: device_str)
+  end
+
+  def self.clear_all_configs
+    devices = Device.all
+    devices.each do |d|
+      d.update(config_info: nil)
+    end
   end
 
 end
