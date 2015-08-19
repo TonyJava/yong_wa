@@ -66,7 +66,8 @@ class AuthsController < ApplicationController
     else
       user = User.create(user_params)
       device = Device.find_by(series_code: params[:device])
-      if device
+      user_device = UserDevice.find_by(user: user, device: device)
+      if !user_device
         user_device = UserDevice.new(user: user, device: device)
         user_device.save! 
       end
