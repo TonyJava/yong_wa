@@ -16,6 +16,7 @@
 #  active        :boolean
 #  config_info   :text(65535)
 #  tracking_info :text(65535)
+#  health_info   :text(65535)
 #
 
 require 'test_helper'

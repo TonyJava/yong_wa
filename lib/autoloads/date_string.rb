@@ -18,4 +18,16 @@ class DateString
     (date_a + 1.day).strftime("%Y-%m-%d")
   end
   
+  def self.prev_day a
+    date_a = Date.strptime(a, "%Y-%m-%d")
+    (date_a - 1.day).strftime("%Y-%m-%d")  
+  end
+
+  def self.today
+    Time.now.strftime("%Y-%m-%d") 
+  end
+
+  def self.now
+    Time.now.strftime("%Y-%m-%d,%H:%M")
+  end
 end

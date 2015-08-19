@@ -17,6 +17,7 @@
 #  active        :boolean
 #  config_info   :text(65535)
 #  tracking_info :text(65535)
+#  health_info   :text(65535)
 #
 
 class Device < ActiveRecord::Base
@@ -72,7 +73,8 @@ class Device < ActiveRecord::Base
     lowPowerWarning: "0",
     sosWarning: "0",
     findWatch: "1",
-    closeWatch: "1"
+    closeWatch: "1",
+    flower: "1"
   }
 
   DEFAULT_TRACKING_RECORD = [
@@ -85,6 +87,18 @@ class Device < ActiveRecord::Base
       other: "..."
     }
   ]
+
+  DEFAULT_HEALTH_RECORD = {
+    step_zero_count: 0,
+    step_extra: 0,
+    turn_zero_count: 0,
+    turn_extra: 0,
+    move_distance_zero_count: 0,
+    move_distance_extra: 0,
+    move_calorie_zero_count: 0,
+    move_calorie_extra: 0
+  }
+
 
   def self.exist?(device)
     device = Device.find_by(series_code: device)
@@ -133,6 +147,72 @@ class Device < ActiveRecord::Base
     hash_selection
   end
 
+  def get_health_info(begin_date, end_date)
+    begin
+      hash_data = JSON.parse(self.health_info, symbolize_names: true)
+    rescue Exception => e
+      puts e.message
+      hash_data = {}
+    end
+
+    result = {step: 0, turn: 0, move_distance: 0, move_calorie: 0}
+    current_date = DateString.prev_day(begin_date)
+    while DateString.compare_less_or_equal(current_date, end_date)
+      ["step", "turn", "move_distance", "move_calorie"].each do |key|
+        hash_selection = hash_data[current_date.to_sym] || DEFAULT_HEALTH_RECORD
+        key_zero_count = (key + "_zero_count").to_sym
+        key_extra = (key + "_extra").to_sym
+        #prev begin day
+        if current_date == DateString.prev_day(begin_date)
+          result[key.to_sym] += - hash_selection[key_extra]
+        elsif current_date == end_date
+          result[key.to_sym] += hash_selection[key_extra] + hash_selection[key_zero_count] 
+        else
+          result[key.to_sym] += hash_selection[key_zero_count] 
+        end
+      end
+      current_date = DateString.next_day(current_date)
+    end
+    result
+  end
+
+  def add_health_info_zero_count(current_date, params = {})
+    begin
+      hash_data = JSON.parse(self.health_info, symbolize_names: true)
+    rescue Exception => e
+      puts e.message
+      hash_data = {}
+    end
+
+    if hash_data[current_date.to_sym] == nil
+      hash_data[current_date.to_sym] = {}
+    end
+    data_json = hash_data[current_date.to_sym]
+    ["step", "turn", "move_distance", "move_calorie"].each do |key|
+      key_zero_count = (key + "_zero_count").to_sym
+      data_json[key_zero_count] ||= 0
+      data_json[key_zero_count] += (params[key_zero_count] || 0)
+    end
+    hash_data[current_date.to_sym] = data_json
+    update(health_info: hash_data.to_json)
+  end
+
+  def set_health_info_extra(current_date, params = {})
+    begin
+      hash_data = JSON.parse(self.health_info, symbolize_names: true)
+    rescue Exception => e
+      puts e.message
+      hash_data = {}
+    end
+
+    if hash_data[current_date.to_sym] == nil
+      hash_data[current_date.to_sym] = {}
+    end
+    hash_data[current_date.to_sym].merge!(params)
+    update(health_info: hash_data.to_json)
+  end
+
+
   #response_report_geo
   #response_report_geo_2
   def add_tracking_record_geo(data_str)
@@ -172,6 +252,13 @@ class Device < ActiveRecord::Base
     devices = Device.all
     devices.each do |d|
       d.update(config_info: nil)
+    end
+  end
+
+  def self.clear_all_health_info
+    devices = Device.all
+    devices.each do |d|
+      d.update(health_info: nil)
     end
   end
 

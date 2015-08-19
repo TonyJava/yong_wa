@@ -86,6 +86,12 @@ class MessageProcessor
       device_model.set_config_field(:closeWatch, params[:closeWatch])
     end
 
+    if params[:flower]
+      params_str = {flower: params[:flower]}.to_s
+      push_command_to_redis(device, 30, params_str)
+      device_model.set_config_field(:flower, params[:flower])
+    end
+
     History.create(device: device_model, data_content: params.to_s)
   end
 
@@ -195,6 +201,8 @@ class MessageProcessor
         response_set_messanger(sock, device, c[0])
       when 'SILENCETIME'
         response_free_period(sock, device, c[0])
+      when 'FLOWER'
+        response_set_flower(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -216,14 +224,41 @@ class MessageProcessor
     print "response_keep_connect"
     #TODO
     #1.SG*8800000015*0002*LK
-    #2.SG*8800000015*000D*LK,50,100,100
-    if str != nil
+    #步数 翻滚次数 电量 运动距离 运动量 开启关闭
+    #2.SG*8800000015*000D*LK,50,100,100,100,100,1
+    device_model = Device.find_device(device)
+    if str != nil && device_model
       fields = str.split(',')
-      step_count = fields[0]
-      turn_count = fields[1]
-      battery_percent = fields[2]
+      step_count = fields[0].to_i
+      turn_count = fields[1].to_i
+      battery_percent = fields[2].to_i
+      move_distance = fields[3].to_i
+      move_calorie = fields[4].to_i
+      toggle = fields[5]
+
+      date_str = DateString.today
+      if toggle.to_s == "1"
+        device_model.set_health_info_extra(date_str, 
+          {
+            step_extra: step_count,
+            turn_extra: turn_count,
+            move_distance_extra: move_distance,
+            move_calorie_extra: move_calorie
+          }
+        )
+      elsif toggle.to_s == "0"
+        device_model.add_health_info_zero_count(date_str, 
+          {
+            step_zero_count: step_count,
+            turn_zero_count: turn_count,
+            move_distance_zero_count: move_distance,
+            move_calorie_zero_count: move_calorie
+          }
+        )
+      end
     end
-    sock.write("#{HEAD}*#{device}*0002*LK\r\n")
+    current_time = DateString.now
+    sock.write("#{HEAD}*#{device}*0002*LK,#{current_time}\r\n")
   end
 
   def self.response_report_geo(sock, device, str)
@@ -313,7 +348,7 @@ class MessageProcessor
       method(:query_pulse),
       method(:none),
       method(:find_watch),
-      method(:none),
+      method(:set_flower),
       #31
       method(:none),
       method(:none),
@@ -719,6 +754,18 @@ class MessageProcessor
   def self.response_find_watch(sock, device, str)
     str = "FIND ok"
     sock.write("#{str}\r\n")
+  end
+
+  #30
+
+  def self.set_flower(device, params = {})
+    str = "0008*FLOWER," + params[:flower].to_s
+    send_message_to(device, str)
+  end 
+
+  def self.response_set_flower(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
   end
 
   #36 设置电话本
