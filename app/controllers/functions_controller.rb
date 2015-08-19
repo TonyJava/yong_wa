@@ -363,6 +363,12 @@ class FunctionsController < ApplicationController
     else
       params_str = {flower: params[:flower]}.to_s
       MessageProcessor.push_command_to_redis(device, 30, params_str)
+      render :json => {
+        msg: "flower_reward ok",
+        request: "POST/functions/flower_reward",
+        code: 1
+      }
+
     end
   end
 
