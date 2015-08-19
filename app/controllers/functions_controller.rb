@@ -241,7 +241,7 @@ class FunctionsController < ApplicationController
       devices_info = []
       devices = user.user_device
       devices.each do |d|
-        devices_info << {deviceId: d.device.series_code, state: d.device.active == true}
+        devices_info << {deviceId: d.device.series_code, state: d.device.active == true, deviceName: d.device.device_name, deviceMobile: d.device.mobile}
       end
       render :json => {
         msg: "success",

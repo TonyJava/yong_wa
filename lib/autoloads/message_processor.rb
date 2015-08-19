@@ -86,10 +86,10 @@ class MessageProcessor
       device_model.set_config_field(:closeWatch, params[:closeWatch])
     end
 
-    if params[:flower]
-      params_str = {flower: params[:flower]}.to_s
-      push_command_to_redis(device, 30, params_str)
-      device_model.set_config_field(:flower, params[:flower])
+    if params[:remindInfo]
+      params_str = {remind_info: params[:remindInfo].to_s.delete("[]")}.to_s
+      push_command_to_redis(device, 32, params_str)
+      device_model.set_config_field(:remindInfo, params[:remindInfo])
     end
 
     History.create(device: device_model, data_content: params.to_s)
@@ -203,6 +203,8 @@ class MessageProcessor
         response_free_period(sock, device, c[0])
       when 'FLOWER'
         response_set_flower(sock, device, c[0])
+      when 'REMIND'
+        response_set_remind(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -351,7 +353,7 @@ class MessageProcessor
       method(:set_flower),
       #31
       method(:none),
-      method(:none),
+      method(:set_remind),
       method(:none),
       method(:none),
       method(:none),
@@ -764,6 +766,19 @@ class MessageProcessor
   end 
 
   def self.response_set_flower(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
+  end
+
+  #32 闹铃
+  def self.set_remind(device, params = {})
+    command = "REMIND," + params[:remind_info].to_s
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)
+  end
+
+  def self.response_set_remind(sock, device, str)
     str = "#{str} ok"
     sock.write("#{str}\r\n") 
   end

@@ -74,7 +74,11 @@ class Device < ActiveRecord::Base
     sosWarning: "0",
     findWatch: "1",
     closeWatch: "1",
-    flower: "1"
+    remindInfo: [
+      "08:10-1-1",
+      "08:10-1-2",
+      "08:10-1-3-0111110"
+    ]
   }
 
   DEFAULT_TRACKING_RECORD = [
