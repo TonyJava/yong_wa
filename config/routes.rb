@@ -31,6 +31,10 @@ Rails.application.routes.draw do
 
   get 'functions/play_voice_file'
 
+  post 'functions/baby_health_info'
+
+  post 'functions/flower_reward'
+
   resources :user_devices
 
   namespace :admin do

@@ -311,6 +311,61 @@ class FunctionsController < ApplicationController
     end
   end
 
+  def baby_health_info
+    user = User.find_by(mobile: params[:mobile], auth_token: params[:token])
+    device = Device.find_by(series_code: params[:device])
+    if !user
+      msg = User.token_valid?(params[:token]) ? "user is not existed" : "token is not valid"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/baby_health_info",
+        code: 0,
+        data: nil
+      }
+    elsif !device
+      msg = "device is not existed"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/baby_health_info",
+        code: 0,
+        data: nil
+      }
+    else
+      result = device.get_health_info(params[:beginTime], params[:endTime])
+      render :json => {
+        msg: msg,
+        request: "POST/functions/baby_health_info",
+        code: 1,
+        data: result
+      }
+    end
+  end
+
+  def flower_reward
+    user = User.find_by(mobile: params[:mobile], auth_token: params[:token])
+    device = Device.find_by(series_code: params[:device])
+    if !user
+      msg = User.token_valid?(params[:token]) ? "user is not existed" : "token is not valid"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/flower_reward",
+        code: 0,
+        data: nil
+      }
+    elsif !device
+      msg = "device is not existed"
+      render :json => {
+        msg: msg,
+        request: "POST/functions/flower_reward",
+        code: 0,
+        data: nil
+      }
+    else
+      params_str = {flower: params[:flower]}.to_s
+      MessageProcessor.push_command_to_redis(device, 30, params_str)
+    end
+  end
+
   def send_voice_file
     device = params[:deviceId]
     begin
