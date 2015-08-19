@@ -63,7 +63,6 @@ class MessageQueue
     else
       puts "not valid sock"
     end
-  end
-  
+  end  
   
 end

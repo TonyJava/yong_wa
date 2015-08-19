@@ -25,6 +25,12 @@ Rails.application.routes.draw do
 
   post 'functions/bind_device'
 
+  post 'functions/send_voice_file'
+
+  post 'functions/voice_file_list'
+
+  get 'functions/play_voice_file'
+
   resources :user_devices
 
   namespace :admin do

@@ -13,53 +13,75 @@ class MessageProcessor
     @@mid = "8800000015" 
   end
 
+  def self.push_command_to_redis(device, command_id, params_str)
+    command = {device: device, command_id: command_id, params: params_str}.to_json
+    $redis.rpush("commands", command)
+  end
+
   def self.process_device_config(device, params = {})
     device_model = Device.find_by(series_code: device)
     if params[:sos]
-      set_sos_number(device, {sos_type: 0, sos_number1: params[:sos][0], sos_number2: params[:sos][1], sos_number3: params[:sos][2]})
+      params_str = {sos_type: 0, sos_number1: params[:sos][0], sos_number2: params[:sos][1], sos_number3: params[:sos][2]}.to_s
+      push_command_to_redis(device, 8, params_str)
       device_model.set_config_field(:sos, params[:sos])
     end
 
     if params[:monitor]
-      monitor(device, {monitor: params[:monitor]})
+      #monitor(device, {monitor: params[:monitor]})
+      params_str =  {monitor: params[:monitor]}.to_s
+      push_command_to_redis(device, 7, params_str)
       device_model.set_config_field(:monitor, params[:monitor])
     end
 
     if params[:work_mode]
-      set_work_mode(device, {work_mode: params[:work_mode]})
+      #set_work_mode(device, {work_mode: params[:work_mode]})
+      params_str =  {work_mode: params[:work_mode]}.to_s
+      push_command_to_redis(device, 40, params_str)
       device_model.set_config_field(:work_mode, params[:work_mode])
     end
 
     if params[:freeTime]
-      set_free_period(device, {period: params[:freeTime].to_s.delete("[]") } )
+      #set_free_period(device, {period: params[:freeTime].to_s.delete("[]") } )
+      params_str =  {period: params[:freeTime].to_s.delete("[]") }.to_s
+      push_command_to_redis(device, 28, params_str)
       device_model.set_config_field(:freeTime, params[:freeTime])
     end
 
     if params[:weekendPositioning]
-      set_weekend_period(device, {period: params[:weekendPositioning].to_s.delete("[]")})
+      #set_weekend_period(device, {period: params[:weekendPositioning].to_s.delete("[]")})
+      params_str = {period: params[:weekendPositioning].to_s.delete("[]") }.to_s
+      push_command_to_redis(device, 41, params_str)
       device_model.set_config_field(:weekendPositioning, params[:weekendPositioning])
     end
 
     if params[:lowPowerWarning]
-      set_battery_alarm(device, {toggle: params[:lowPowerWarning]})
+      #set_battery_alarm(device, {toggle: params[:lowPowerWarning]})
+      params_str = {toggle: params[:lowPowerWarning]}.to_s
+      push_command_to_redis(device, 15, params_str)
       device_model.set_config_field(:lowPowerWarning, params[:lowPowerWarning])
     end
 
     if params[:sosWarning]
-      set_sos_alarm(device, {toggle: params[:sosWarning]})
+      #set_sos_alarm(device, {toggle: params[:sosWarning]})
+      params_str = {toggle: params[:sosWarning]}.to_s
+      push_command_to_redis(device, 14, params_str)
       device_model.set_config_field(:sosWarning, params[:sosWarning])
     end
 
     if params[:findWatch]
       if params[:findWatch].to_i == 1
-        find_watch(device, {})
+        #find_watch(device, {})
+        params_str = {}.to_s
+        push_command_to_redis(device, 29, params_str)
       end
       device_model.set_config_field(:findWatch, params[:findWatch])
     end
 
     if params[:closeWatch]
       if params[:closeWatch].to_i == 1
-        power_off(device, {})
+        #power_off(device, {})
+        params_str = {}.to_s
+        push_command_to_redis(device, 25, params_str)
       end
       device_model.set_config_field(:closeWatch, params[:closeWatch])
     end
@@ -300,12 +322,12 @@ class MessageProcessor
       method(:none),
       #36
       method(:set_messanger),
-      method(:none),
+      method(:send_voice_message),
       method(:none),
       method(:none),
       method(:set_work_mode),
       #41
-      method(:set_weekend_period),
+      method(:set_weekend_period)
     ]
   end
 
@@ -717,6 +739,69 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
+
+  #37 语音对讲
+  def self.send_voice_message(device, params = {})
+    begin
+      file_name = params[:file_name]
+      file_size = File.size(file_name)
+      chunk_size = 1024
+      i = 0
+      File.open(file_name, 'rb') do |file|
+        chunk_count = (file_size * 1.0 / chunk_size).ceil
+        while chunk = file.read(chunk_size)
+          #sock.write("a")
+          #{}"sock.write("#{chunk.size} ")
+          i += 1
+          #chunk.gsub!("\r","\r#{extra_r}")
+          #chunk.gsub!("\n","\n#{extra_n}")
+          command = "TK,#{file_name},#{i},#{chunk_count},#{chunk}"
+          len = format_num16(command.length)
+          str = "#{len}*#{command}"
+          send_message_to(device, str)
+        end
+      end
+    rescue Exception => e
+      puts "#{e.inspect}"
+    end
+
+  end
+
+  def self.response_voice_message(sock, device, str)
+    #SG*8800000015*2962*TK,file_name,1,2,#!AMR
+    begin
+      #response of client has received file from server 
+      if str == nil
+        str = "TK ok"
+        sock.write("#{str}\r\n")
+        return 
+      end
+      str = str.split(",", 5)[4]
+      dir = "#{Rails.root}/public/voices/#{device}"
+      if !File.directory?(dir)
+        FileUtils.mkdir_p(dir)
+      end
+      #time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
+      time_str = str.split(",", 5)[1]
+      file_name = File.join(dir, "#{time_str}_receive.amr")
+      File.open(file_name, "ab") do |file|
+        file.write(str)
+      end
+
+      response = "TK,1"
+      len = format_num16(response.length)
+      str = "#{len}*#{response}"
+      send_message_to(device, str)
+    rescue Exception => e
+      puts "#{e.inspect}"
+      response = "TK,0"
+      len = format_num16(response.length)
+      str = "#{len}*#{response}"
+      send_message_to(device, str)
+    end
+  end
+
+
   #40 设置工作模式
   def self.set_work_mode(device, params = {})
     str = "0010*WORKMODE," + params[:work_mode].to_s
@@ -739,26 +824,6 @@ class MessageProcessor
   def self.response_weekend_period(sock, device, str)
     str = "#{str} ok"
     sock.write("#{str}\r\n") 
-  end
-
-  def self.response_voice_message(sock, device, str)
-    #SG*8800000015*2962*TK,1,1,2950,#!AMR
-    begin
-      str = str.split(",", 4)[3]
-      dir = "#{Rails.root}/public/voices/#{device}/receive"
-      if !File.directory?(dir)
-        FileUtils.mkdir_p(dir)
-      end
-      time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
-      file_name = File.join(dir, "#{time_str}.amr")
-      File.open(file_name, "wb") do |file|
-        file.write(str)
-      end
-      sock.write("#{1}\r\n")
-    rescue Exception => e
-      puts "#{e.message}"
-      sock.write("#{0}\r\n")
-    end
   end
 
   private

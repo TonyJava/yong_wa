@@ -41,6 +41,7 @@ class ChatServer
               else
                 str = sock.gets("\r\n").chomp("\r\n")
                 puts(str)
+                logger.info(str)
                 MessageProcessor.in_command(sock, str)
 
                 #echo

@@ -71,7 +71,7 @@ class FunctionsController < ApplicationController
   end
 
   def show_tracking
-    device = Device.find_by(series_code: params[:device])
+    device = Device.find_by(series_code: params[:deviceId])
     if !User.token_valid?(params[:token])
       render :json => {
         msg: "show tracking code error",
@@ -258,10 +258,10 @@ class FunctionsController < ApplicationController
       }
     end
   end
-  # deviceid <-> devicemobile
+  # deviceId <-> devicemobile
   def activate_device
-    device = Device.find_by(series_code: params[:deviceid])
-    if !Device.exist?(params[:deviceid])
+    device = Device.find_by(series_code: params[:deviceId])
+    if !Device.exist?(params[:deviceId])
       render :json => {
         msg: "device not exist",
         request: "POST/functions/activate_device",
@@ -297,7 +297,7 @@ class FunctionsController < ApplicationController
         code: 0
       }
     else
-      device = Device.find_by(series_code: params[:deviceid])
+      device = Device.find_by(series_code: params[:deviceId])
       if device == nil
         user_device = UserDevice.new(user: user, device: device)
         user_device.save!
@@ -311,12 +311,89 @@ class FunctionsController < ApplicationController
     end
   end
 
-  def get_voice_file
-    
+  def send_voice_file
+    device = params[:deviceId]
+    begin
+      dir = "public/voices/#{device}"
+      if !File.directory?(dir)
+        FileUtils.mkdir_p(dir)
+      end
+      time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
+      file_name = File.join(dir, "#{time_str}_send.amr")
+      File.open(file_name, "wb") do |file|
+        file.write(params[:file_content])
+      end
+
+      #MessageProcessor.send_voice_message(params[:deviceId], {file_name: file_name})
+      params_str = {file_name: file_name}.to_s
+      MessageProcessor.push_command_to_redis(device, 37, params_str)
+
+      render :json => {
+        msg: "upload file ok",
+        request: "POST/functions/send_voice_file",
+        code: 1
+      }
+    rescue Exception => e
+      render :json => {
+        msg: e.message,
+        request: "POST/functions/send_voice_file",
+        code: 0
+      }
+    end
+
   end
 
-  def send_voice_file
-    
+  def voice_file_list
+    device = params[:deviceId]
+    begin
+      dir = "public/voices/#{device}"
+      if !File.directory?(dir)
+        FileUtils.mkdir_p(dir)
+      end
+
+      total_count = 0
+      sorted_files = Dir.glob("#{dir}/*.amr").sort_by { |file|
+        total_count += 1
+        Time.now - File.mtime(file)
+      }
+
+      perpage_count = params[:record_limit].to_i
+      max_page = total_count / perpage_count
+      max_page += 1 if total_count % perpage_count >= 1
+      view_page = [params[:page_num].to_i, max_page].min
+      page_offset = perpage_count * (view_page - 1)
+
+      hash_data = {data: []}
+      select_files = sorted_files.slice(page_offset, perpage_count)
+      select_files.each do |file|
+        file_name = File.basename(file)
+        hash_data[:data].append({
+          url:  "voices/#{device}/#{file_name}",
+          type: file_name.split("_")[-1] == "receive" ? "receive" : "send"
+        })
+      end
+
+      render :json => hash_data.merge({
+        msg: "voice file list ok",
+        request: "GET/functions/voice_file_list",
+        code: 1,
+        data_count: select_files.count,
+        max_page: max_page
+      })
+
+    rescue Exception => e
+      puts "#{e.inspect}"
+      render :json => {
+        msg: e.message,
+        request: "GET/functions/voice_file_list",
+        code: 0
+      }
+    end
+  end
+
+  def play_voice_file
+    file_path = "public/voices/#{params[:file_name]}"
+    send_file file_path
   end
 
 end
