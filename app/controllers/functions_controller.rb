@@ -298,7 +298,7 @@ class FunctionsController < ApplicationController
       }
     else
       device = Device.find_by(series_code: params[:deviceId])
-      if device == nil
+      if device != nil && UserDevice.find_by(user: user, device: device) == nil
         user_device = UserDevice.new(user: user, device: device)
         user_device.save!
       end
