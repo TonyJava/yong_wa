@@ -352,7 +352,7 @@ class MessageProcessor
       #26
       method(:remove),
       method(:query_pulse),
-      method(:none),
+      method(:set_free_period),
       method(:find_watch),
       method(:set_flower),
       #31
