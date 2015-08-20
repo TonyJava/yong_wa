@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150819131424) do
+ActiveRecord::Schema.define(version: 20150820021830) do
 
   create_table "admin_manage_users", force: :cascade do |t|
     t.string   "user_name",  limit: 255
@@ -39,15 +39,15 @@ ActiveRecord::Schema.define(version: 20150819131424) do
 
   create_table "histories", force: :cascade do |t|
     t.integer  "data_type",          limit: 4
-    t.string   "data_content",       limit: 255
+    t.text     "data_content",       limit: 65535
     t.string   "location_code",      limit: 255
     t.string   "location_type",      limit: 255
     t.string   "data_stamp_address", limit: 255
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
+    t.datetime "created_at",                                               null: false
+    t.datetime "updated_at",                                               null: false
     t.integer  "device_id",          limit: 4
-    t.decimal  "lng",                            precision: 9, scale: 6
-    t.decimal  "lat",                            precision: 9, scale: 6
+    t.decimal  "lng",                              precision: 9, scale: 6
+    t.decimal  "lat",                              precision: 9, scale: 6
   end
 
   add_index "histories", ["device_id"], name: "index_histories_on_device_id", using: :btree

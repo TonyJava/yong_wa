@@ -4,7 +4,7 @@
 #
 #  id                 :integer          not null, primary key
 #  data_type          :integer
-#  data_content       :string(255)
+#  data_content       :text(65535)
 #  location_code      :string(255)
 #  location_type      :string(255)
 #  data_stamp_address :string(255)
