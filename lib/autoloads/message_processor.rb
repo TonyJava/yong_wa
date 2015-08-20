@@ -92,6 +92,10 @@ class MessageProcessor
       device_model.set_config_field(:remindInfo, params[:remindInfo])
     end
 
+    if params[:electronicFence]
+      device_model.set_config_field(:electronicFence, params[:electronicFence])
+    end
+
     History.create(device: device_model, data_content: params.to_s)
   end
 

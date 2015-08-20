@@ -78,7 +78,11 @@ class Device < ActiveRecord::Base
       "08:10-1-1",
       "08:10-1-2",
       "08:10-1-3-0111110"
-    ]
+    ],
+    electronicFence: {
+      center: "22.564025, N, 113.242329, E",
+      radius: 500
+    }
   }
 
   DEFAULT_TRACKING_RECORD = [
@@ -240,6 +244,10 @@ class Device < ActiveRecord::Base
     new_record[:direction] = data_array[8]
     new_record[:other] = data_array[9..-1]
 
+    if is_out_fence(new_record[:geo_loc])[0]
+      ApplicationController.helpers.send_fence_warning_for_device(self)
+    end
+
     if hash_data[date_format.to_sym] == nil
       hash_data[date_format.to_sym] = []
     end
@@ -264,6 +272,22 @@ class Device < ActiveRecord::Base
     devices.each do |d|
       d.update(health_info: nil)
     end
+  end
+
+  def is_out_fence(current_geo)
+    config_info = get_config_field(:electronicFence)
+    return false if config_info == nil
+
+    radius = config_info[:radius].to_f
+    center = config_info[:center]
+    center_lat = center.split(",")[0].to_f
+    center_long = center.split(",")[2].to_f
+
+    current_lat = current_geo.split(",")[0].to_f
+    current_long = current_geo.split(",")[2].to_f
+    dist = GeoDistance::Haversine.distance( center_lat, center_long, current_lat, current_long )
+
+    return [dist >= radius, {dist: dist, radius: radius}]
   end
 
 end

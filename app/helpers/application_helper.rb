@@ -49,4 +49,26 @@ module ApplicationHelper
     return JSON.parse(res.body, symbolize_names: true)[:error]
   end
 
+  def send_fence_warning_for_device(device_model)
+    user_devices = UserDevice.find_by(device: device_model)
+    return if user_devices == nil
+    user_devices.each do |u_d|
+      mobile = u_d.user.mobile
+      send_fence_warning_to_mobile(mobile, device_model.series_code)
+    end
+  end
+
+  def send_fence_warning_to_mobile(mobile, device)
+    uri = URI('http://sms-api.luosimao.com/v1/send.json')
+    req = Net::HTTP::Post.new(uri)
+    req.set_form_data("mobile" => mobile, "message" => "宝贝离开安全区域了！:#{device}")
+    req.basic_auth('api','key-b2b42c72fcba77b8f252c1aed4241297')
+    res = Net::HTTP.start(uri.hostname, uri.port) do |http|
+      http.request(req)
+    end
+    logger.debug "#{res.body}"
+
+    return JSON.parse(res.body, symbolize_names: true)[:error]
+  end
+
 end

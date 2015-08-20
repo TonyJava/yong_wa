@@ -61,7 +61,7 @@ gem 'redis-rack-cache'
 
 gem 'mysql2'
 gem 'unicorn'
-
+gem 'geo-distance', '~> 0.2.0'
 group :development do
   gem 'capistrano', '~> 3.2.1'
   gem 'capistrano-rails', '~> 1.1.1'
