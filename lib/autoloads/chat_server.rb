@@ -28,7 +28,7 @@ class ChatServer
               str = sprintf("Client in %s:%s\n", new_sock.peeraddr[2], new_sock.peeraddr[1])
               puts str
               @descriptors.push(new_sock)
-              new_sock.puts("connected")
+              #new_sock.puts("connected")
               @client = new_sock
             else
               if sock.eof?

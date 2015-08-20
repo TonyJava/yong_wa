@@ -227,7 +227,7 @@ class MessageProcessor
 
   def self.response_keep_connect(sock, device, str)
     #TODO: send every 5 minutes
-    print "response_keep_connect"
+    #print "response_keep_connect"
     #TODO
     #1.SG*8800000015*0002*LK
     #步数 翻滚次数 电量 运动距离 运动量 开启关闭
