@@ -283,8 +283,8 @@ class Device < ActiveRecord::Base
     center_lat = center.split(",")[0].to_f
     center_long = center.split(",")[2].to_f
 
-    current_lat = current_geo.split(",")[0].to_f
-    current_long = current_geo.split(",")[2].to_f
+    current_lat = current_geo[0].to_f
+    current_long = current_geo[2].to_f
     dist = GeoDistance::Haversine.distance( center_lat, center_long, current_lat, current_long )
 
     return [dist >= radius, {dist: dist, radius: radius}]
