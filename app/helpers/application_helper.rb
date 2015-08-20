@@ -23,7 +23,7 @@ module ApplicationHelper
   def send_captcha_to_mobile(mobile, captcha)
     uri = URI('http://sms-api.luosimao.com/v1/send.json')
     req = Net::HTTP::Post.new(uri)
-    req.set_form_data("mobile" => mobile, "message" => "验证码:#{captcha}【快来运动】")
+    req.set_form_data("mobile" => mobile, "message" => "验证码:#{captcha}【勇娃】")
     req.basic_auth('api','key-b2b42c72fcba77b8f252c1aed4241297')
     res = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
@@ -38,7 +38,7 @@ module ApplicationHelper
   def send_server_info_to_watch(mobile)
     uri = URI('http://sms-api.luosimao.com/v1/send.json')
     req = Net::HTTP::Post.new(uri)
-    req.set_form_data("mobile" => mobile, "message" => "120.25.212.225:2626")
+    req.set_form_data("mobile" => mobile, "message" => "120.25.212.225:2626 【勇娃】")
     req.basic_auth('api','key-b2b42c72fcba77b8f252c1aed4241297')
     res = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
@@ -61,7 +61,7 @@ module ApplicationHelper
   def send_fence_warning_to_mobile(mobile, device)
     uri = URI('http://sms-api.luosimao.com/v1/send.json')
     req = Net::HTTP::Post.new(uri)
-    req.set_form_data("mobile" => mobile, "message" => "宝贝离开安全区域了！:#{device}")
+    req.set_form_data("mobile" => mobile, "message" => "宝贝离开安全区域了！:#{device} 【勇娃】")
     req.basic_auth('api','key-b2b42c72fcba77b8f252c1aed4241297')
     res = Net::HTTP.start(uri.hostname, uri.port) do |http|
       http.request(req)
