@@ -51,7 +51,7 @@ class ChatServer
           end
 
         rescue Exception => e
-          puts "exception! : #{e.message}"
+          puts "exception! : #{e.inspect}"
           if sock != @serverSocket
             sock.close
           end

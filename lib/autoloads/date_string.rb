@@ -28,6 +28,6 @@ class DateString
   end
 
   def self.now
-    Time.now.strftime("%Y-%m-%d,%H:%M")
+    Time.now.strftime("%Y-%m-%d,%H:%M:%S")
   end
 end
