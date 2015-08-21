@@ -822,7 +822,7 @@ class MessageProcessor
           i += 1
           #chunk.gsub!("\r","\r#{extra_r}")
           #chunk.gsub!("\n","\n#{extra_n}")
-          command = "TK,#{file_name},#{i},#{chunk_count},#{chunk}"
+          command = "TK,#{File.basename(file_name)},#{i},#{chunk_count},#{chunk}"
           len = format_num16(command.length)
           str = "#{len}*#{command}"
           send_message_to(device, str)

@@ -394,7 +394,8 @@ class FunctionsController < ApplicationController
       render :json => {
         msg: "upload file ok",
         request: "POST/functions/send_voice_file",
-        code: 1
+        code: 1,
+        file_name: file_name
       }
     rescue Exception => e
       render :json => {
