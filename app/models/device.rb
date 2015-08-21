@@ -80,7 +80,7 @@ class Device < ActiveRecord::Base
       "08:10-1-3-0111110"
     ],
     electronicFence: {
-      center: "22.564025, N, 113.242329, E",
+      center: "22.564025,N,113.242329,E",
       radius: 500
     }
   }
@@ -239,7 +239,7 @@ class Device < ActiveRecord::Base
     new_record = {}
     new_record[:time] = "#{time_str[0..1]}:#{time_str[2..3]}:#{time_str[4..5]}"
     new_record[:gps_sig] = data_array[2]
-    new_record[:geo_loc] = data_array[3..6].to_s
+    new_record[:geo_loc] = data_array[3..6].join(",")
     #new_record[:velocity] = data_array[7]
     #new_record[:direction] = data_array[8]
     #new_record[:other] = data_array[9..-1].to_s
