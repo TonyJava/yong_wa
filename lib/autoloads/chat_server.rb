@@ -54,6 +54,7 @@ class ChatServer
           puts "exception! : #{e.inspect}"
           if sock != @serverSocket
             sock.close
+            @descriptors.delete(sock)
           end
         end
       else
