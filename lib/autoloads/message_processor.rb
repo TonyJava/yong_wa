@@ -843,16 +843,16 @@ class MessageProcessor
         sock.write("#{str}\r\n")
         return 
       end
-      str = str.split(",", 5)[4]
+      content = str.split(",", 4)[3]
       dir = "#{Rails.root}/public/voices/#{device}"
       if !File.directory?(dir)
         FileUtils.mkdir_p(dir)
       end
       #time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
-      time_str = str.split(",", 5)[1]
+      time_str = str.split(",", 4)[0]
       file_name = File.join(dir, "#{time_str}_receive.amr")
       File.open(file_name, "ab") do |file|
-        file.write(str)
+        file.write(content)
       end
 
       response = "TK,1"
