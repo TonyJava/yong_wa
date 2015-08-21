@@ -381,8 +381,10 @@ class FunctionsController < ApplicationController
       end
       time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
       file_name = File.join(dir, "#{time_str}_send.amr")
+      #multipart
+      uploaded_io = params[:voice]
       File.open(file_name, "wb") do |file|
-        file.write(params[:file_content])
+        file.write(uploaded_io.read)
       end
 
       #MessageProcessor.send_voice_message(params[:deviceId], {file_name: file_name})
