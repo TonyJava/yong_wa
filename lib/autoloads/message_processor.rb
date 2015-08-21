@@ -272,8 +272,9 @@ class MessageProcessor
     #geo_status = str.split(',')
     #geo_status
     device_model = Device.find_device(device)
-    device_model.add_tracking_record_geo(str)
-
+    if device_model
+      device_model.add_tracking_record_geo(str)
+    end    
     sock.write("geo ok!\r\n")
   end
 
