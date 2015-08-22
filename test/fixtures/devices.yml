@@ -15,7 +15,7 @@
 #  device_name   :string(255)
 #  active        :boolean
 #  config_info   :text(65535)
-#  tracking_info :text(65535)
+#  tracking_info :text(16777215)
 #  health_info   :text(65535)
 #
 
