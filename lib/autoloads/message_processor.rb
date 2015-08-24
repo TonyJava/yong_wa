@@ -209,6 +209,8 @@ class MessageProcessor
         response_set_flower(sock, device, c[0])
       when 'REMIND'
         response_set_remind(sock, device, c[0])
+      when 'SHOOT'
+        response_shoot(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -369,7 +371,8 @@ class MessageProcessor
       method(:none),
       method(:set_work_mode),
       #41
-      method(:set_weekend_period)
+      method(:set_weekend_period),
+      method(:shoot)
     ]
   end
 
@@ -850,9 +853,15 @@ class MessageProcessor
       end
       #time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
       time_str = str.split(",", 4)[0]
-      file_name = File.join(dir, "#{time_str}_receive.amr")
-      File.open(file_name, "ab") do |file|
-        file.write(content)
+
+      device_model = Device.find_device(device)
+      user_devices = UserDevice.where(device: device_model)
+
+      user_devices.each do |user_device|
+        file_name = File.join(dir, "#{user_device.user.mobile}","#{time_str}_receive.amr")
+        File.open(file_name, "ab") do |file|
+          file.write(content)
+        end
       end
 
       response = "TK,1"
@@ -889,6 +898,17 @@ class MessageProcessor
   end
 
   def self.response_weekend_period(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
+  end
+
+  # 42 shoot
+  def self.shoot(device, params = {})
+    str = "0005*SHOOT"
+    send_message_to(device, str)
+  end
+
+  def self.response_shoot(sock, device, str)
     str = "#{str} ok"
     sock.write("#{str}\r\n") 
   end

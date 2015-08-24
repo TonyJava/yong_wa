@@ -22,6 +22,7 @@ class FunctionsController < ApplicationController
         request: "POST/functions/show_device",
         code: 10000,
         device_info: {
+          device_id: device.series_code,
           device_name: device.device_name,
           sex: device.sex,
           birth: device.birth,
@@ -127,7 +128,7 @@ class FunctionsController < ApplicationController
         hash_data["data_info#{i}"] = {
           device: device.series_code,
           data_type: history.data_type,
-          data_content: history.data_content,
+          data_content: eval(history.data_content),
           time_stamp: history.created_at.to_s,
           location_code: history.location_code,
           location_type: history.location_type,
@@ -380,7 +381,7 @@ class FunctionsController < ApplicationController
         FileUtils.mkdir_p(dir)
       end
       time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
-      file_name = File.join(dir, "#{time_str}_send.amr")
+      file_name = File.join(dir, "#{params[:mobile]}","#{time_str}_send.amr")
       #multipart
       uploaded_io = params[:voice]
       File.open(file_name, "wb") do |file|
@@ -432,7 +433,7 @@ class FunctionsController < ApplicationController
       select_files.each do |file|
         file_name = File.basename(file)
         hash_data[:data].append({
-          url:  "voices/#{device}/#{file_name}",
+          url:  "voices/#{device}/#{params[:mobile]}/#{file_name}",
           type: file_name.split("_")[-1] == "receive" ? "receive" : "send"
         })
       end
