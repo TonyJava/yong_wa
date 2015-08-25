@@ -13,6 +13,7 @@
 #  device_id          :integer
 #  lng                :decimal(9, 6)
 #  lat                :decimal(9, 6)
+#  data_description   :string(255)
 #
 # Indexes
 #

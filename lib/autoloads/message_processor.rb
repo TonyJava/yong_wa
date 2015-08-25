@@ -5,12 +5,36 @@ require "socket"
 class MessageProcessor
 
   HEAD = "SG"
+  CONFIG_DESCRIPT = {
+    sos: "SOS号码",
+    monitor: "监听",
+    work_mode: "工作模式",
+    freeTime: "免打扰",
+    weekendPositioning: "周末时间段",
+    lowPowerWarning: "低电量警告",
+    sosWarning: "sos警告",
+    findWatch: "寻找手表",
+    closeWatch: "关闭手表",
+    remindInfo: "闹铃",
+    electronicFence: "电子围栏"
+  }
 
   public
 
   def initialize(args)
     @@head = "SG"
     @@mid = "8800000015" 
+  end
+
+  def self.get_history_descript(data = {})
+    infos = []
+    CONFIG_DESCRIPT.each do |key, value|
+      if data[key]
+        infos[0] ||= "设置"
+        infos.append(value)
+      end
+    end
+    infos.join(":")
   end
 
   def self.push_command_to_redis(device, command_id, params_str)

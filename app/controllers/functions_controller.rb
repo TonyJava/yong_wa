@@ -23,7 +23,7 @@ class FunctionsController < ApplicationController
         code: 10000,
         device_info: {
           device_id: device.series_code,
-          device_name: device.device_name,
+          device_name: device.device_name || device.series_code ,
           sex: device.sex,
           birth: device.birth,
           height: device.height,
@@ -123,17 +123,20 @@ class FunctionsController < ApplicationController
       data_count = histories.count
 
       hash_data = {}
+      hash_data[:data] = []
       data_count.times do |i|
         history = histories[i]
-        hash_data["data_info#{i}"] = {
+        data_content = history.data_content != nil ? eval(history.data_content) : ""
+        hash_data[:data].append({
           device: device.series_code,
           data_type: history.data_type,
-          data_content: history.data_content != nil ? eval(history.data_content) : "",
+          data_description: MessageProcessor.get_history_descript(data_content),
+          data_content: data_content,
           time_stamp: history.created_at.to_s,
           location_code: history.location_code,
           location_type: history.location_type,
           data_stamp_address: history.data_stamp_address
-        }
+        })
       end
 
       render :json => hash_data.merge({
@@ -242,7 +245,7 @@ class FunctionsController < ApplicationController
       devices_info = []
       devices = user.user_device
       devices.each do |d|
-        devices_info << {deviceId: d.device.series_code, state: d.device.active == true, deviceName: d.device.device_name, deviceMobile: d.device.mobile}
+        devices_info << {deviceId: d.device.series_code, state: d.device.active == true, deviceName: d.device.device_name || d.device.series_code, deviceMobile: d.device.mobile}
       end
       render :json => {
         msg: "success",
