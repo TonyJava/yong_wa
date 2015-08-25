@@ -24,6 +24,8 @@ class Device < ActiveRecord::Base
   has_many :user_device
   has_many :history
 
+  before_create :set_device_name
+
   DEFAULT_CONFIG = {
     sos: [
           "18565739316",
@@ -299,5 +301,10 @@ class Device < ActiveRecord::Base
 
     return [dist >= radius, {dist: dist, radius: radius}]
   end
+
+  private
+    def set_device_name
+      self.device_name ||= self.series_code
+    end
 
 end

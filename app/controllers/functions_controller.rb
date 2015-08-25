@@ -128,7 +128,7 @@ class FunctionsController < ApplicationController
         hash_data["data_info#{i}"] = {
           device: device.series_code,
           data_type: history.data_type,
-          data_content: eval(history.data_content),
+          data_content: history.data_content != nil ? eval(history.data_content) : "",
           time_stamp: history.created_at.to_s,
           location_code: history.location_code,
           location_type: history.location_type,
