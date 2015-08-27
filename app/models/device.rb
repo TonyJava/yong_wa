@@ -241,14 +241,20 @@ class Device < ActiveRecord::Base
     new_record = {}
     new_record[:time] = "#{time_str[0..1]}:#{time_str[2..3]}:#{time_str[4..5]}"
     new_record[:gps_sig] = data_array[2]
-    new_record[:geo_loc] = data_array[3..6].join(",")
+
+    if new_record[:gps_sig] == "V"
+      v_pos = ApplicationController.helpers.get_v_position(data_array[20], data_array[21])
+      new_record[:geo_loc] = [v_pos[:lat], "N", v_pos[:long], "E"]
+    elsif new_record[:gps_sig] == "A"
+      new_record[:geo_loc] = data_array[3..6].join(",")
+    end
     #new_record[:velocity] = data_array[7]
     #new_record[:direction] = data_array[8]
     #new_record[:other] = data_array[9..-1].to_s
     
-    if new_record[:gps_sig] == "V"
-      return
-    end
+    # if new_record[:gps_sig] == "V"
+    #   return
+    # end
     # if new_record[:gps_sig] == "A" && is_out_fence(new_record[:geo_loc])[0]
     #   ApplicationController.helpers.send_fence_warning_for_device(self)
     # end
