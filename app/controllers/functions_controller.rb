@@ -293,25 +293,38 @@ class FunctionsController < ApplicationController
   # user <-> device
   def bind_device
     user = User.find_by(mobile: params[:mobile], auth_token: params[:token])
-    if !user
+    device = Device.find_by(series_code: params[:deviceId])
+    if !user && Rails.env == "production"
       msg = User.token_valid?(params[:token]) ? "user is not existed" : "token is not valid"
       render :json => {
         msg: msg,
         request: "POST/functions/bind_device",
         code: 0
       }
+    elsif !device
+      render :json => {
+        msg: "device not exist",
+        request: "POST/functions/bind_device",
+        code: 0
+      }
     else
-      device = Device.find_by(series_code: params[:deviceId])
-      if device != nil && UserDevice.find_by(user: user, device: device) == nil
+
+      if UserDevice.find_by(device: device) == nil
         user_device = UserDevice.new(user: user, device: device)
         user_device.save!
+        render :json => {
+          msg: "bind_device ok",
+          request: "POST/functions/bind_device",
+          code: 1
+        }
+      else
+        render :json => {
+          msg: "device already binded",
+          request: "POST/functions/bind_device",
+          code: 0
+        }
       end
 
-      render :json => {
-        msg: "bind_device ok",
-        request: "POST/functions/bind_device",
-        code: 1
-      }
     end
   end
 

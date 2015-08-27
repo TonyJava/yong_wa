@@ -87,6 +87,7 @@ module ApplicationHelper
 
     response = http.request(request)
     response_data = JSON.parse(response.read_body, symbolize_names: true)
+
     res = {}
     res[:long] = response_data[:data][:lon]
     res[:lat] = response_data[:data][:lat]
