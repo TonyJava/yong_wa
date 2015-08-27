@@ -871,10 +871,6 @@ class MessageProcessor
         return 
       end
       content = str.split(",", 4)[3]
-      dir = "#{Rails.root}/public/voices/#{device}"
-      if !File.directory?(dir)
-        FileUtils.mkdir_p(dir)
-      end
       #time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
       time_str = str.split(",", 4)[0]
 
@@ -882,7 +878,11 @@ class MessageProcessor
       user_devices = UserDevice.where(device: device_model)
 
       user_devices.each do |user_device|
-        file_name = File.join(dir, "#{user_device.user.mobile}","#{time_str}_receive.amr")
+        dir = "#{Rails.root}/public/voices/#{device}/#{user_device.user.mobile}"
+        if !File.directory?(dir)
+          FileUtils.mkdir_p(dir)
+        end
+        file_name = File.join(dir,"#{time_str}_receive.amr")
         File.open(file_name, "ab") do |file|
           file.write(content)
         end

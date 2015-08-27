@@ -379,12 +379,12 @@ class FunctionsController < ApplicationController
   def send_voice_file
     device = params[:deviceId]
     begin
-      dir = "public/voices/#{device}"
+      dir = "public/voices/#{device}/#{params[:mobile]}"
       if !File.directory?(dir)
         FileUtils.mkdir_p(dir)
       end
       time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
-      file_name = File.join(dir, "#{params[:mobile]}","#{time_str}_send.amr")
+      file_name = File.join(dir,"#{time_str}_send.amr")
       #multipart
       uploaded_io = params[:voice]
       File.open(file_name, "wb") do |file|
