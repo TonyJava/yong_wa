@@ -864,6 +864,7 @@ class MessageProcessor
   def self.response_voice_message(sock, device, str)
     #SG*8800000015*2962*TK,file_name,1,2,#!AMR
     begin
+      #str = str.force_encoding("utf-8")
       #response of client has received file from server 
       if str == nil
         str = "TK ok"
@@ -875,6 +876,7 @@ class MessageProcessor
       time_str = str.split(",", 4)[0]
 
       part = str.split(",", 4)[1].to_i
+      total = str.split(",", 4)[2].to_i
 
       device_model = Device.find_device(device)
       user_devices = UserDevice.where(device: device_model)
@@ -890,12 +892,17 @@ class MessageProcessor
         if !File.directory?(dir)
           FileUtils.mkdir_p(dir)
         end
-        file_name = File.join(dir,"#{time_str}_receive.amr")
-
+        file_name = File.join(dir,"#{time_str}_receive.amr_temp")
 
         File.open(file_name, mode) do |file|
           file.write(content)
+          file.close      
+          if part == total
+            complete_name = File.join(dir,"#{time_str}_receive.amr")
+            FileUtils.mv file, complete_name
+          end
         end
+
       end
 
       response = "TK,1"
@@ -904,6 +911,7 @@ class MessageProcessor
       send_message_to(device, str)
     rescue Exception => e
       puts "#{e.inspect}"
+      puts e.backtrace.join("\n")
       response = "TK,0"
       len = format_num16(response.length)
       str = "#{len}*#{response}"
