@@ -893,7 +893,7 @@ class MessageProcessor
         file_name = File.join(dir,"#{time_str}_receive.amr")
 
 
-        File.open(file_name, "a") do |file|
+        File.open(file_name, mode) do |file|
           file.write(content)
         end
       end
