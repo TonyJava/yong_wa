@@ -45,9 +45,26 @@ class MessageProcessor
   def self.process_device_config(device, params = {})
     device_model = Device.find_by(series_code: device)
     if params[:sos]
+      puts "process_device_config: #{params[:sos]}"
       params_str = {sos_type: 0, sos_number1: params[:sos][0], sos_number2: params[:sos][1], sos_number3: params[:sos][2]}.to_s
       push_command_to_redis(device, 8, params_str)
       device_model.set_config_field(:sos, params[:sos])
+    end
+
+    if params[:babyPhoneNumber]
+      infos = params[:babyPhoneNumber]
+      infos_1 = infos[0..9]
+      infos_2 = infos[10..19]
+      [infos_1, infos_2].each_with_index do |info, index|
+        next if !info
+        messanger_str = info.inject("") { |r, e|
+          r += "#{e[:name]},#{e[:value]},"
+        }
+        messanger_str = messanger_str[0..-2]
+        params_str = {type: index, messanger_info: messanger_str}.to_s
+        push_command_to_redis(device, 36, params_str)
+      end
+      device_model.set_config_field(:babyPhoneNumber, params[:babyPhoneNumber])
     end
 
     if params[:monitor]
@@ -743,7 +760,7 @@ class MessageProcessor
     sock.write("#{str}\r\n") 
   end
 
-  #26 取下手环报警开关
+  #26 
   def self.remove(device, params = {})
     str = "0008*REMOVE," + params[:toggle].to_s
     send_message_to(device, str)  
@@ -753,7 +770,7 @@ class MessageProcessor
     str = "#{str} ok"
     sock.write("#{str}\r\n")  
   end
-  #27 查询脉搏
+  #27 
   def self.query_pulse(device, params = {})
     str = "0005*PULSE"
     send_message_to(device, str)
@@ -766,7 +783,7 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
-  #28 免打扰
+  #28 
   def self.set_free_period(device, params = [])
     command = "SILENCETIME," + params[:period].to_s
     len = format_num16(command.length)
@@ -779,7 +796,7 @@ class MessageProcessor
     sock.write("#{str}\r\n") 
   end
 
-  #29 寻找手表
+  #29 
   def self.find_watch(device, params = {})
     str = "0004*FIND"
     send_message_to(device, str)
@@ -802,7 +819,7 @@ class MessageProcessor
     sock.write("#{str}\r\n") 
   end
 
-  #32 闹铃
+  #32 alarm
   def self.set_remind(device, params = {})
     command = "REMIND," + params[:remind_info].to_s
     len = format_num16(command.length)
@@ -815,7 +832,7 @@ class MessageProcessor
     sock.write("#{str}\r\n") 
   end
 
-  #36 设置电话本
+  #36 messanger
   def self.set_messanger(device, params = {})
     case params[:type].to_i
     when 0
@@ -834,7 +851,7 @@ class MessageProcessor
   end
 
 
-  #37 语音对讲
+  #37 voice
   def self.send_voice_message(device, params = {})
     begin
       file_name = params[:file_name]
@@ -882,9 +899,9 @@ class MessageProcessor
       user_devices = UserDevice.where(device: device_model)
 
       if part == 1
-        mode = "w"
+        mode = "wb"
       else
-        mode = "a"
+        mode = "ab"
       end
 
       user_devices.each do |user_device|
@@ -920,7 +937,7 @@ class MessageProcessor
   end
 
 
-  #40 设置工作模式
+  #40 work mode
   def self.set_work_mode(device, params = {})
     str = "0010*WORKMODE," + params[:work_mode].to_s
     send_message_to(device, str)
@@ -931,7 +948,7 @@ class MessageProcessor
     sock.write("#{str}\r\n")
   end
 
-  #41 设置周末时间段
+  #41 weekend
   def self.set_weekend_period(device, params = {})
     command = "WORK2," + params[:period].to_s
     len = format_num16(command.length)
