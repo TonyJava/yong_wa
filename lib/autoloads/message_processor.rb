@@ -521,6 +521,7 @@ class MessageProcessor
 
   #8 SOS中心号码
   def self.set_sos_number(device, params = {})
+    puts params
     type = params[:sos_type].to_i
     case type
     when 1
@@ -530,7 +531,7 @@ class MessageProcessor
     when 3
       str = "0010*SOS3," + params[:sos_number3].to_s
     when 0
-      str = "0010*SOS," + params[:sos_number_1].to_s + "," + params[:sos_number_2].to_s + "," + params[:sos_number_3].to_s
+      str = "0010*SOS," + params[:sos_number1].to_s + "," + params[:sos_number2].to_s + "," + params[:sos_number3].to_s
     end
     device_model = Device.find_by(series_code: device)
 

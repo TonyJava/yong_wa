@@ -24,7 +24,7 @@ class MessageQueue
         device = command[:device].to_s
         command_id = command[:command_id].to_i
         params = eval(command[:params])  #hash
-
+        puts params
         method_obj = @methods[command_id]
         next if method_obj == nil 
 
