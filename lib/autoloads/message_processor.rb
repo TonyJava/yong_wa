@@ -8,7 +8,7 @@ class MessageProcessor
   CONFIG_DESCRIPT = {
     sos: "SOS号码",
     monitor: "监听",
-    work_mode: "工作模式",
+    workMode: "工作模式",
     freeTime: "免打扰",
     weekendPositioning: "周末时间段",
     lowPowerWarning: "低电量警告",
@@ -58,7 +58,7 @@ class MessageProcessor
       [infos_1, infos_2].each_with_index do |info, index|
         next if !info
         messanger_str = info.inject("") { |r, e|
-          r += "#{e[:name]},#{e[:value]},"
+          r += "#{e[:name].encode("gb2312")},#{e[:value]},"
         }
         messanger_str = messanger_str[0..-2]
         params_str = {type: index, messanger_info: messanger_str}.to_s
@@ -74,11 +74,11 @@ class MessageProcessor
       device_model.set_config_field(:monitor, params[:monitor])
     end
 
-    if params[:work_mode]
+    if params[:workMode]
       #set_work_mode(device, {work_mode: params[:work_mode]})
-      params_str =  {work_mode: params[:work_mode]}.to_s
+      params_str =  {work_mode: params[:workMode]}.to_s
       push_command_to_redis(device, 40, params_str)
-      device_model.set_config_field(:work_mode, params[:work_mode])
+      device_model.set_config_field(:workMode, params[:workMode])
     end
 
     if params[:freeTime]
@@ -523,16 +523,20 @@ class MessageProcessor
   def self.set_sos_number(device, params = {})
     puts params
     type = params[:sos_type].to_i
+    command = ""
     case type
     when 1
-      str = "0010*SOS1," + params[:sos_number1].to_s
+      command = "SOS1," + params[:sos_number1].to_s
     when 2
-      str = "0010*SOS2," + params[:sos_number2].to_s
+      command = "SOS2," + params[:sos_number2].to_s
     when 3
-      str = "0010*SOS3," + params[:sos_number3].to_s
+      command = "SOS3," + params[:sos_number3].to_s
     when 0
-      str = "0010*SOS," + params[:sos_number1].to_s + "," + params[:sos_number2].to_s + "," + params[:sos_number3].to_s
+      command = "SOS," + params[:sos_number1].to_s + "," + params[:sos_number2].to_s + "," + params[:sos_number3].to_s
     end
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+
     device_model = Device.find_by(series_code: device)
 
     old_sos_info = device_model.get_config_field(:sos)
@@ -621,8 +625,8 @@ class MessageProcessor
   end
 
   def self.response_sos_alarm(sock, device, str)
-    str = "#{str} ok"
-    sock.write("#{str}\r\n")
+    #str = "#{str} ok"
+    #sock.write("#{str}\r\n")
   end
 
   #15 低电短信报警
@@ -637,8 +641,8 @@ class MessageProcessor
   end
 
   def self.response_battery_alarm(sock, device, str)
-    str = "#{str} ok"
-    sock.write("#{str}\r\n")
+    #str = "#{str} ok"
+    #sock.write("#{str}\r\n")
   end
 
   # 16 APN 设置
