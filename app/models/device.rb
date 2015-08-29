@@ -91,10 +91,7 @@ class Device < ActiveRecord::Base
     {
       time: "101930",
       gps_sig: "A",
-      geo_loc: "22.564025, N, 113.242329, E",
-      velocity: "5.21",
-      direction: "152",
-      other: "..."
+      geo_loc: "22.564025,N,113.242329,E"
     }
   ]
 
@@ -244,7 +241,7 @@ class Device < ActiveRecord::Base
 
     if new_record[:gps_sig] == "V"
       v_pos = ApplicationController.helpers.get_v_position(data_array[20], data_array[21])
-      new_record[:geo_loc] = [v_pos[:lat], "N", v_pos[:long], "E"]
+      new_record[:geo_loc] = [v_pos[:lat], "N", v_pos[:long], "E"].join(",")
     elsif new_record[:gps_sig] == "A"
       new_record[:geo_loc] = data_array[3..6].join(",")
     end
