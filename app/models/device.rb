@@ -84,7 +84,8 @@ class Device < ActiveRecord::Base
     electronicFence: {
       center: "22.564025,N,113.242329,E",
       radius: 500
-    }
+    },
+    location: "1"
   }
 
   DEFAULT_TRACKING_RECORD = [

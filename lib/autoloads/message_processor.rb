@@ -16,7 +16,8 @@ class MessageProcessor
     findWatch: "寻找手表",
     closeWatch: "关闭手表",
     remindInfo: "闹铃",
-    electronicFence: "电子围栏"
+    electronicFence: "电子围栏",
+    location: "一键定位"
   }
 
   public
@@ -137,6 +138,14 @@ class MessageProcessor
       device_model.set_config_field(:electronicFence, params[:electronicFence])
     end
 
+    if params[:location]
+      if params[:location].to_i == 1
+        params_str = {}.to_s
+        push_command_to_redis(device, 43, params_str)
+      end
+      device_model.set_config_field(:location, params[:location])
+    end
+
     History.create(device: device_model, data_content: params.to_s)
   end
 
@@ -252,6 +261,8 @@ class MessageProcessor
         response_set_remind(sock, device, c[0])
       when 'SHOOT'
         response_shoot(sock, device, c[0])
+      when 'LOCATION'
+        response_location(sock, device, c[1])
       else
         sock.write("current not valid\r\n")
       end
@@ -975,6 +986,20 @@ class MessageProcessor
   def self.response_shoot(sock, device, str)
     str = "#{str} ok"
     sock.write("#{str}\r\n") 
+  end
+
+  #43 location
+  def self.location(device, params = {})
+    str = "0008*LOCATION"
+    send_message_to(device, str)
+  end
+
+  def self.response_location(sock, device, str)
+    device_model = Device.find_device(device)
+    if device_model
+      device_model.add_tracking_record_geo(str)
+    end
+    sock.write("location ok!\r\n")
   end
 
   private
