@@ -30,6 +30,7 @@ class MessageProcessor
   def self.get_history_descript(data = {})
     infos = []
     CONFIG_DESCRIPT.each do |key, value|
+      break if data.class.to_s != "Hash"
       if data[key]
         infos[0] ||= "设置"
         infos.append(value)
