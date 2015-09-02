@@ -6,18 +6,21 @@ class MessageProcessor
 
   HEAD = "SG"
   CONFIG_DESCRIPT = {
-    sos: "SOS号码",
-    monitor: "监听",
-    workMode: "工作模式",
-    freeTime: "免打扰",
-    weekendPositioning: "周末时间段",
-    lowPowerWarning: "低电量警告",
-    sosWarning: "sos警告",
-    findWatch: "寻找手表",
-    closeWatch: "关闭手表",
-    remindInfo: "闹铃",
-    electronicFence: "电子围栏",
-    location: "一键定位"
+    sos: "设置SOS号码",
+    monitor: "语音监听",
+    workMode: "修改工作模式",
+    freeTime: "修改免打扰时段",
+    weekendPositioning: "修改周末定位时端段",
+    lowPowerWarning: "修改低电告警设置",
+    sosWarning: "修改SOS告警设置",
+    findWatch: "查找手表",
+    closeWatch: "远程关闭手表",
+    electronicFence: "修改电子围栏",
+    location: "立即定位孩子位置",
+    shoot: "一键监拍",
+    remindInfo: "配置闹铃信息",
+    babyPhoneNumber: "设置宝贝通信录",
+    schoolPositioning: "修改上学定位时段"
   }
 
   public
@@ -32,11 +35,11 @@ class MessageProcessor
     CONFIG_DESCRIPT.each do |key, value|
       break if data.class.to_s != "Hash"
       if data[key]
-        infos[0] ||= "设置"
+        infos[0] ||= ""
         infos.append(value)
       end
     end
-    infos.join(":")
+    infos.join("")
   end
 
   def self.push_command_to_redis(device, command_id, params_str)
@@ -346,6 +349,20 @@ class MessageProcessor
   def self.response_alarm_data(sock, device, str)
     #TODO: update data in databse
     sock.write("#{HEAD}*#{device}*0002*AL\r\n")
+    device_model = Device.find_device(device)
+    params = {}
+    type = str.split(",", 2)[0]
+    data_content = str.split(",", 2)[1]
+    case type
+    when "1"
+      params[:watch_lowPowerWarning] = "1"
+    when "2"
+      params[:watch_electronicFence] = "1"
+    when "3"
+      params[:watch_sosWarning] = "1"
+    end
+    params[:watch_data] = data_content
+    History.create(device: device_model, data_content: params.to_s)
   end
 
   def self.response_address_data(sock, device, str)

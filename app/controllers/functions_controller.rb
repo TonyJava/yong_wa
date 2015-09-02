@@ -117,7 +117,7 @@ class FunctionsController < ApplicationController
       max_page = total_count / perpage_count
       max_page += 1 if total_count % perpage_count >= 1
 
-      view_page = [params[:page_num].to_i, max_page].min
+      view_page = params[:page_num].to_i
       page_offset = perpage_count * (view_page - 1)
       histories = histories.limit(perpage_count).offset(page_offset)
       data_count = histories.count
@@ -474,8 +474,17 @@ class FunctionsController < ApplicationController
   end
 
   def play_voice_file
-    file_path = "public/#{params[:url]}"
-    send_file file_path
+    if !User.token_valid?(params[:token]) && Rails.env == "production"
+      render :json => {
+        msg: "show device code error",
+        request: "POST/functions/show_device",
+        code: 20101
+      }
+      return
+    else
+      file_path = "public/#{params[:url]}"
+      send_file file_path
+    end
   end
 
 end

@@ -253,9 +253,13 @@ class Device < ActiveRecord::Base
     # if new_record[:gps_sig] == "V"
     #   return
     # end
-    # if new_record[:gps_sig] == "A" && is_out_fence(new_record[:geo_loc])[0]
-    #   ApplicationController.helpers.send_fence_warning_for_device(self)
-    # end
+    if is_out_fence(new_record[:geo_loc])[0]
+      ApplicationController.helpers.send_fence_warning_for_device(self)
+      params = {}
+      params[:watch_electronicFence] = "1"
+      params[:watch_data] = new_record[:geo_loc]
+      History.create(device: self, data_content: params.to_s)
+    end
 
     if hash_data[date_format.to_sym] == nil
       hash_data[date_format.to_sym] = []

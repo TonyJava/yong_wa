@@ -29,7 +29,7 @@ Rails.application.routes.draw do
 
   post 'functions/voice_file_list'
 
-  get 'functions/play_voice_file'
+  post 'functions/play_voice_file'
 
   post 'functions/baby_health_info'
 
