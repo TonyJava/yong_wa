@@ -111,7 +111,7 @@ class FunctionsController < ApplicationController
       }
     else
       perpage_count = params[:record_limit].to_i
-      histories = History.where(device: device).order(:created_at)
+      histories = History.where(device: device).order("created_at DESC")
       total_count = histories.count
 
       max_page = total_count / perpage_count
@@ -450,6 +450,7 @@ class FunctionsController < ApplicationController
         file_name = File.basename(file)
         hash_data[:data].append({
           url:  "voices/#{device}/#{params[:mobile]}/#{file_name}",
+          time: File.mtime(file).strftime("%Y-%m-%d %H:%M"),
           type: file_name.split("_")[-1] == "receive" ? "receive" : "send"
         })
       end
@@ -473,7 +474,7 @@ class FunctionsController < ApplicationController
   end
 
   def play_voice_file
-    file_path = "public/voices/#{params[:file_name]}"
+    file_path = "public/#{params[:url]}"
     send_file file_path
   end
 
