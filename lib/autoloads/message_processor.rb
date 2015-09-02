@@ -150,6 +150,14 @@ class MessageProcessor
       device_model.set_config_field(:location, params[:location])
     end
 
+    if params[:shoot]
+      if params[:shoot].to_i == 1
+        params_str = {}.to_s
+        push_command_to_redis(device, 42, params_str)
+      end
+      device_model.set_config_field(:shoot, params[:shoot])
+    end
+
     History.create(device: device_model, data_content: params.to_s)
   end
 
@@ -442,7 +450,8 @@ class MessageProcessor
       method(:set_work_mode),
       #41
       method(:set_weekend_period),
-      method(:shoot)
+      method(:shoot),
+      method(:location)
     ]
   end
 

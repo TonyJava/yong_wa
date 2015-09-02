@@ -85,7 +85,8 @@ class Device < ActiveRecord::Base
       center: "22.564025,N,113.242329,E",
       radius: 500
     },
-    location: "1"
+    location: "1",
+    shoot: "1"
   }
 
   DEFAULT_TRACKING_RECORD = [

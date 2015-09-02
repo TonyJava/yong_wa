@@ -427,7 +427,7 @@ class FunctionsController < ApplicationController
   def voice_file_list
     device = params[:deviceId]
     begin
-      dir = "public/voices/#{device}"
+      dir = "public/voices/#{device}/#{params[:mobile]}"
       if !File.directory?(dir)
         FileUtils.mkdir_p(dir)
       end
