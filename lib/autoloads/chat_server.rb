@@ -55,6 +55,7 @@ class ChatServer
           if sock != @serverSocket
             sock.close
             @descriptors.delete(sock)
+            $socket_device.delete(sock)
           end
         end
       else

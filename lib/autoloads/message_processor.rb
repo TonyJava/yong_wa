@@ -181,9 +181,9 @@ class MessageProcessor
       a = str.split('*', 4)
       device = a[1]
 
-      if device && !$socket_device[sock]
+      if device #&& !$socket_device[sock]
         $socket_device[sock] = device
-        puts "connect new device: #{device}"
+        puts "device: #{device}"
       end
 
       b = a[3]
