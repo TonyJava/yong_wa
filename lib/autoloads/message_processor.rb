@@ -20,7 +20,8 @@ class MessageProcessor
     shoot: "一键监拍",
     remindInfo: "配置闹铃信息",
     babyPhoneNumber: "设置宝贝通信录",
-    schoolPositioning: "修改上学定位时段"
+    schoolPositioning: "修改上学定位时段",
+    shoot: "一键监拍"
   }
 
   public
@@ -98,6 +99,12 @@ class MessageProcessor
       params_str = {period: params[:weekendPositioning].to_s.delete("[]") }.to_s
       push_command_to_redis(device, 41, params_str)
       device_model.set_config_field(:weekendPositioning, params[:weekendPositioning])
+    end
+
+    if params[:schoolPositioning]
+      params_str = {period: params[:schoolPositioning].to_s.delete("[]") }.to_s
+      push_command_to_redis(device, 23, params_str)
+      device_model.set_config_field(:weekendPositioning, params[:schoolPositioning])
     end
 
     if params[:lowPowerWarning]
@@ -1039,6 +1046,8 @@ class MessageProcessor
     sock = $socket_device.key(device)
     if sock
       sock.write(concat_message(device,str))
+    else
+      puts "device not exist"
     end
   end
 
