@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def send_fence_warning_for_device(device_model)
-    user_devices = UserDevice.find_by(device: device_model)
+    user_devices = UserDevice.where(device: device_model)
     return if user_devices == nil
     user_devices.each do |u_d|
       mobile = u_d.user.mobile
