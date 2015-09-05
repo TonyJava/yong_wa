@@ -150,7 +150,11 @@ class Device < ActiveRecord::Base
     hash_selection = {}
     current_date = begin_date
     while DateString.compare_less_or_equal(current_date, end_date)
-      hash_selection[current_date.to_sym] = hash_data[current_date.to_sym] || DEFAULT_TRACKING_RECORD
+      prev_date = DateString.prev_day(current_date)
+      default_date = hash_data[prev_date.to_sym] != nil ? [hash_data[prev_date.to_sym].last] : nil
+      default_date ||= hash_selection[prev_date.to_sym] != nil ? [hash_selection[prev_date.to_sym].last] : nil
+      default_date ||= [DEFAULT_TRACKING_RECORD]
+      hash_selection[current_date.to_sym] = hash_data[current_date.to_sym] || default_date
       current_date = DateString.next_day(current_date)
     end
     hash_selection
@@ -254,6 +258,7 @@ class Device < ActiveRecord::Base
     # if new_record[:gps_sig] == "V"
     #   return
     # end
+
     if is_out_fence(new_record[:geo_loc])[0]
       ApplicationController.helpers.send_fence_warning_for_device(self)
       params = {}
@@ -297,7 +302,7 @@ class Device < ActiveRecord::Base
 
   def is_out_fence(current_geo)
     config_info = get_config_field(:electronicFence)
-    return false if config_info == nil
+    return [false, {dist: -1, radius: -1}] if config_info == nil
 
     radius = config_info[:radius].to_f
     center = config_info[:center]
