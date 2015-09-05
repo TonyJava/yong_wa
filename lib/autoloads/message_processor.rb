@@ -284,6 +284,10 @@ class MessageProcessor
         response_shoot(sock, device, c[0])
       when 'LOCATION'
         response_location(sock, device, c[1])
+      when 'SOSQ'
+        response_sos_number_resuest(sock, device, c[0])
+      when 'PHBQ'
+        response_messanger_resuest(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -403,6 +407,35 @@ class MessageProcessor
   def self.response_lat_lng_data(sock, device, str)
     #Todo: logic
     sock.write("#{HEAD}*#{device}*0021*RG,BASE,22.571707,N,113.8613968,E\r\n")
+  end
+
+  def self.response_sos_number_resuest(sock, device, str)
+    device_model = Device.find_by(series_code: device)
+    sos_info = device_model.get_config_field(:sos)
+    sos_info ||= []
+    command = "SOS," + [sos_info[0], sos_info[1], sos_info[2]].join(",")  
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)  
+  end
+
+  def self.response_messanger_resuest(sock, device, str)
+    device_model = Device.find_by(series_code: device)
+    infos = device_model.get_config_field("babyPhoneNumber")
+    infos_1 = infos[0..9]
+    infos_2 = infos[10..19]
+    head_str = ["PHB,", "PHB2,"]
+    [infos_1, infos_2].each_with_index do |info, index|
+      next if !info
+      messanger_str = info.inject("") { |r, e|
+        r += "#{e[:name].encode("gb2312")},#{e[:value]},"
+      }
+      messanger_str = messanger_str[0..-2]
+      command = "#{head_str[index]}" + messanger_str
+      len = format_num16(command.length)
+      str = "#{len}*#{command}"
+      send_message_to(device, str)
+    end
   end
 
   #send message
