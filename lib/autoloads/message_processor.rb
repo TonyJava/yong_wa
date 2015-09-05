@@ -343,7 +343,10 @@ class MessageProcessor
       end
     end
     current_time = DateString.now
-    sock.write("#{HEAD}*#{device}*0002*LK,#{current_time}\r\n")
+    response = "LK,#{current_time}"
+    len = format_num16(response.length)
+    str = "#{len}*#{response}"
+    send_message_to(device, str)
   end
 
   def self.response_report_geo(sock, device, str)
