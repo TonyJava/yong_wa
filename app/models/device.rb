@@ -260,7 +260,7 @@ class Device < ActiveRecord::Base
     # end
 
     if is_out_fence(new_record[:geo_loc])[0]
-      ApplicationController.helpers.send_fence_warning_for_device(self)
+      #ApplicationController.helpers.send_fence_warning_for_device(self)
       params = {}
       params[:watch_electronicFence] = "1"
       params[:watch_data] = new_record[:geo_loc]
