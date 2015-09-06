@@ -59,9 +59,9 @@ class MessageProcessor
 
     if params[:babyPhoneNumber]
       infos = params[:babyPhoneNumber]
-      infos_1 = infos[0..9]
-      infos_2 = infos[10..19]
-      [infos_1, infos_2].each_with_index do |info, index|
+      infos_1 = infos[0..19]
+      #infos_2 = infos[10..19]
+      [infos_1].each_with_index do |info, index|
         next if !info
         messanger_str = info.inject("") { |r, e|
           r += "#{e[:name].encode("gb2312")},#{e[:value]},"
@@ -425,10 +425,11 @@ class MessageProcessor
   def self.response_messanger_resuest(sock, device, str)
     device_model = Device.find_by(series_code: device)
     infos = device_model.get_config_field("babyPhoneNumber")
-    infos_1 = infos[0..9]
-    infos_2 = infos[10..19]
+    #infos_1 = infos[0..9]
+    #infos_2 = infos[10..19]
+    infos_3 = infos[0..19]
     head_str = ["PHB,", "PHB2,"]
-    [infos_1, infos_2].each_with_index do |info, index|
+    [infos_3].each_with_index do |info, index|
       next if !info
       messanger_str = info.inject("") { |r, e|
         r += "#{e[:name].encode("gb2312")},#{e[:value]},"
