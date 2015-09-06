@@ -4,7 +4,7 @@ class HistoriesController < ApplicationController
   # GET /histories
   # GET /histories.json
   def index
-    @histories = History.all
+    @histories = History.all.page(params[:page])
   end
 
   # GET /histories/1

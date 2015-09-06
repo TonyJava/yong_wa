@@ -79,6 +79,9 @@ gem 'daemon-spawn', :require => 'daemon_spawn'
 gem 'rerun'
 gem 'tzinfo-data', platforms: [:mingw, :mswin]
 
+#paginate
+gem 'kaminari', '~> 0.16.3'
+
 gem 'rb-readline'
 gem 'annotate', '~> 2.6.6'
 

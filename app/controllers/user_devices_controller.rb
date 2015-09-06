@@ -4,7 +4,7 @@ class UserDevicesController < ApplicationController
   # GET /user_devices
   # GET /user_devices.json
   def index
-    @user_devices = UserDevice.all
+    @user_devices = UserDevice.all.page(params[:page])
   end
 
   # GET /user_devices/1
