@@ -959,6 +959,7 @@ class MessageProcessor
           len = format_num16(command.length)
           str = "#{len}*#{command}"
           send_message_to(device, str)
+          sleep(1.0)
         end
       end
     rescue Exception => e

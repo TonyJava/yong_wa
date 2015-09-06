@@ -8,3 +8,10 @@
 
 Admin::ManageUser.delete_all
 Admin::ManageUser.create(user_name: "admin", password: "admin")
+
+start_id = 1150900001
+while start_id <= 1150910000
+  deviceId = start_id.to_s
+  Device.create(series_code: deviceId)
+  start_id += 1
+end
