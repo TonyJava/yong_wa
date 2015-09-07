@@ -85,6 +85,7 @@ class Device < ActiveRecord::Base
       center: "22.564025,N,113.242329,E",
       radius: 500
     },
+    electronicFenceOn: "0",
     location: "1",
     shoot: "18565739316"
   }
@@ -136,7 +137,7 @@ class Device < ActiveRecord::Base
   def get_config_field(key)
     info = self.config_info || DEFAULT_CONFIG.to_json
     hash_values = JSON.parse(info, symbolize_names: true)
-    hash_values[key.to_sym]
+    hash_values[key.to_sym] || DEFAULT_CONFIG[key.to_sym]
   end
 
   def get_tracking_record(begin_date, end_date)
@@ -263,8 +264,8 @@ class Device < ActiveRecord::Base
     #   return
     # end
 
-    if is_out_fence(new_record[:geo_loc])[0]
-      #ApplicationController.helpers.send_fence_warning_for_device(self)
+    if get_config_field(:electronicFenceOn).to_s == "1" && is_out_fence(new_record[:geo_loc])[0]
+      ApplicationController.helpers.send_fence_warning_for_device(self)
       params = {}
       params[:watch_electronicFence] = "1"
       params[:watch_data] = new_record[:geo_loc]

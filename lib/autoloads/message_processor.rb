@@ -152,6 +152,10 @@ class MessageProcessor
       device_model.set_config_field(:electronicFence, params[:electronicFence])
     end
 
+    if params[:electronicFenceOn]
+      device_model.set_config_field(:electronicFenceOn, params[:electronicFenceOn])
+    end
+
     if params[:location]
       if params[:location].to_i == 1
         params_str = {}.to_s
