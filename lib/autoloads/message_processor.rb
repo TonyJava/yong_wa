@@ -24,7 +24,8 @@ class MessageProcessor
     electronicFenceOn: "开关电子围栏",
     watch_sosWarning: "sos告警",
     watch_lowPowerWarning: "低电告警",
-    watch_electronicFence: "电子围栏告警"
+    watch_electronicFence: "电子围栏告警",
+    watch_keypad: "终端拨号盘"
   }
 
   public
@@ -170,6 +171,12 @@ class MessageProcessor
       device_model.set_config_field(:shoot, params[:shoot])
     end
 
+    if params[:watch_keypad]
+      params_str = {watch_keypad: params[:watch_keypad]}.to_s
+      push_command_to_redis(device, 44, params_str)
+      device_model.set_config_field(:watch_keypad, params[:watch_keypad])
+    end
+
     History.create(device: device_model, data_content: params.to_s)
   end
 
@@ -289,10 +296,14 @@ class MessageProcessor
         response_shoot(sock, device, c[0])
       when 'LOCATION'
         response_location(sock, device, c[1])
+      when 'KEYPAD'
+        response_keypad(sock, device, c[0])
       when 'SOSQ'
         response_sos_number_resuest(sock, device, c[0])
       when 'PHBQ'
         response_messanger_resuest(sock, device, c[0])
+      when 'KEYPADQ'
+        response_keypad_request(sock, device, c[0])
       else
         sock.write("current not valid\r\n")
       end
@@ -447,6 +458,17 @@ class MessageProcessor
     end
   end
 
+  def self.response_keypad_request(sock, device, str)
+    device_model = Device.find_by(series_code: device)
+    keypad_info = device_model.get_config_field("watch_keypad")
+    command = "KEYPAD," + keypad_info
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)  
+  end
+
+
+
   #send message
 
   def self.setup_positive_methods()
@@ -502,7 +524,8 @@ class MessageProcessor
       #41
       method(:set_weekend_period),
       method(:shoot),
-      method(:location)
+      method(:location),
+      method(:keypad),
     ]
   end
 
@@ -1081,6 +1104,19 @@ class MessageProcessor
       device_model.add_tracking_record_geo(str)
     end
     sock.write("location ok!\r\n")
+  end
+
+  #44 keypad
+  def self.keypad(device, params = {})
+    command = "KEYPAD," + params[:watch_keypad].to_s
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
+    send_message_to(device, str)
+  end
+
+  def self.response_keypad(sock, device, str)
+    str = "#{str} ok"
+    sock.write("#{str}\r\n") 
   end
 
   private
