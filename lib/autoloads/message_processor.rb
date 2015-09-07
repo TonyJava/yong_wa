@@ -20,7 +20,11 @@ class MessageProcessor
     shoot: "一键监拍",
     remindInfo: "配置闹铃信息",
     babyPhoneNumber: "设置宝贝通信录",
-    schoolPositioning: "修改上学定位时段"
+    schoolPositioning: "修改上学定位时段",
+    electronicFenceOn: "开关电子围栏",
+    watch_sosWarning: "sos告警",
+    watch_lowPowerWarning: "低电告警",
+    watch_electronicFence: "电子围栏告警"
   }
 
   public

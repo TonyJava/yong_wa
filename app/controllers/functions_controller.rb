@@ -97,7 +97,7 @@ class FunctionsController < ApplicationController
 
   def show_history
     device = Device.find_by(series_code: params[:device])
-    if !User.token_valid?(params[:token])
+    if Rails.env == "production" && !User.token_valid?(params[:token])
       render :json => {
         msg: "show history code error",
         request: "POST/functions/show_history",
