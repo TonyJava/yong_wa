@@ -177,11 +177,15 @@ class Device < ActiveRecord::Base
         key_extra = (key + "_extra").to_sym
         #prev begin day
         if current_date == DateString.prev_day(begin_date)
-          result[key.to_sym] += - hash_selection[key_extra]
+          result[key.to_sym] += - hash_selection[key_extra] || 0
         elsif current_date == end_date
-          result[key.to_sym] += hash_selection[key_extra] + hash_selection[key_zero_count] 
+          #if key == "turn"
+           # binding.pry
+          #end
+          
+          result[key.to_sym] += hash_selection[key_extra] || 0 + hash_selection[key_zero_count] || 0
         else
-          result[key.to_sym] += hash_selection[key_zero_count] 
+          result[key.to_sym] += hash_selection[key_zero_count] || 0
         end
       end
       current_date = DateString.next_day(current_date)
