@@ -20,8 +20,7 @@ class MessageProcessor
     shoot: "一键监拍",
     remindInfo: "配置闹铃信息",
     babyPhoneNumber: "设置宝贝通信录",
-    schoolPositioning: "修改上学定位时段",
-    shoot: "一键监拍"
+    schoolPositioning: "修改上学定位时段"
   }
 
   public
@@ -158,10 +157,8 @@ class MessageProcessor
     end
 
     if params[:shoot]
-      if params[:shoot].to_i == 1
-        params_str = {}.to_s
-        push_command_to_redis(device, 42, params_str)
-      end
+      params_str = {shoot: params[:shoot]}.to_s
+      push_command_to_redis(device, 42, params_str)
       device_model.set_config_field(:shoot, params[:shoot])
     end
 
@@ -1053,7 +1050,9 @@ class MessageProcessor
 
   # 42 shoot
   def self.shoot(device, params = {})
-    str = "0005*SHOOT"
+    command = "SHOOT," + params[:shoot].to_s
+    len = format_num16(command.length)
+    str = "#{len}*#{command}"
     send_message_to(device, str)
   end
 

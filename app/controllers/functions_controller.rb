@@ -447,11 +447,11 @@ class FunctionsController < ApplicationController
       hash_data = {data: []}
       select_files = sorted_files.slice(page_offset, perpage_count)
       select_files.each do |file|
-        file_name = File.basename(file)
+        file_name = File.basename(file, ".amr")
         hash_data[:data].append({
-          url:  "voices/#{device}/#{params[:mobile]}/#{file_name}",
+          url:  "voices/#{device}/#{params[:mobile]}/#{file_name}.amr",
           time: File.mtime(file).strftime("%Y-%m-%d %H:%M"),
-          type: file_name.split("_")[-1] == "receive" ? "receive" : "send"
+          type: file_name.split("_")[-1] == "send" ? "send" : "receive"
         })
       end
 
