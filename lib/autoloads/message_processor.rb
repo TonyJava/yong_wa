@@ -441,7 +441,7 @@ class MessageProcessor
       }
       messanger_str = messanger_str[0..-2]
       command = "#{head_str[index]}" + messanger_str
-      len = format_num16(command.length)
+      len = format_num16(command.bytesize)
       str = "#{len}*#{command}"
       send_message_to(device, str)
     end
