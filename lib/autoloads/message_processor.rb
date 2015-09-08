@@ -194,6 +194,8 @@ class MessageProcessor
       device = a[1]
 
       if device #&& !$socket_device[sock]
+        old_sock = $socket_device.key(device)
+        $socket_device.delete(old_sock) if old_sock
         $socket_device[sock] = device
         puts "device: #{device}"
         puts $socket_device #if Rails.env == "development"
