@@ -196,8 +196,8 @@ class MessageProcessor
       if device #&& !$socket_device[sock]
         $socket_device[sock] = device
         puts "device: #{device}"
-        puts $socket_device if Rails.env == "development"
-        puts $socket_device.key(device) if Rails.env == "development"
+        puts $socket_device #if Rails.env == "development"
+        puts $socket_device.key(device) #if Rails.env == "development"
       end
 
       b = a[3]
@@ -310,6 +310,7 @@ class MessageProcessor
 
     rescue Exception => e
       sock.write("not valid #{e.message}\r\n")
+      puts e.backtrace.join("\n")
     end
   end
 

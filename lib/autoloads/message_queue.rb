@@ -32,6 +32,7 @@ class MessageQueue
         method_obj.call(device, params)
       rescue Exception => e
         puts e.message
+        puts e.backtrace.join("\n")
       end
     }
   end
