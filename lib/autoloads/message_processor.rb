@@ -39,7 +39,7 @@ class MessageProcessor
     infos = []
     CONFIG_DESCRIPT.each do |key, value|
       break if data.class.to_s != "Hash"
-      if data[key]
+      if data[key.to_s] || data[key]
         infos[0] ||= ""
         infos.append(value)
       end
