@@ -179,7 +179,8 @@ class Device < ActiveRecord::Base
         key_extra = (key + "_extra").to_sym
         #prev begin day
         if current_date == DateString.prev_day(begin_date)
-          result[key.to_sym] += - hash_selection[key_extra] || 0
+          #binding.pry
+          result[key.to_sym] += - (hash_selection[key_extra] || 0 )
         elsif current_date == end_date
           #if key == "turn"
            # binding.pry
@@ -209,8 +210,10 @@ class Device < ActiveRecord::Base
     data_json = hash_data[current_date.to_sym]
     ["step", "turn", "move_distance", "move_calorie"].each do |key|
       key_zero_count = (key + "_zero_count").to_sym
+      key_extra = (key + "_extra").to_sym
       data_json[key_zero_count] ||= 0
       data_json[key_zero_count] += (params[key_zero_count] || 0)
+      data_json[key_extra] = 0
     end
     hash_data[current_date.to_sym] = data_json
     update(health_info: hash_data.to_json)
