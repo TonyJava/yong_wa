@@ -120,6 +120,12 @@ class Device < ActiveRecord::Base
     end
   end
 
+  def reset
+    user_device = UserDevice.find_by(device: self)
+    user_device.delete if user_device
+    self.update!(mobile: nil, active: false, config_info: nil, tracking_info: nil, health_info: nil)
+  end
+
   def get_config
     if !self.config_info
       self.config_info = DEFAULT_CONFIG.to_json
@@ -167,8 +173,11 @@ class Device < ActiveRecord::Base
       hash_data = JSON.parse(self.health_info, symbolize_names: true)
     rescue Exception => e
       puts e.message
+      puts e.backtrace.join("\n")
       hash_data = {}
     end
+
+    begin
 
     result = {step: 0, turn: 0, move_distance: 0, move_calorie: 0}
     current_date = DateString.prev_day(begin_date)
@@ -193,6 +202,11 @@ class Device < ActiveRecord::Base
       end
       current_date = DateString.next_day(current_date)
     end
+    
+    rescue Exception => e
+      puts e.backtrace.join("\n")
+    end
+
     result
   end
 

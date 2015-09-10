@@ -1,0 +1,9 @@
+<%= form_for(Device.new, url: reset_device_url) do |f|%>
+  <div class="field">
+    <%= f.label :deviceId %><br>
+    <%= f.text_field :series_code %>
+  </div>
+  <div class="actions">
+    <%= f.submit :reset%>
+  </div>
+<% end %>

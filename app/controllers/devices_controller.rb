@@ -5,6 +5,7 @@ class DevicesController < ApplicationController
   # GET /devices.json
   def index
     @devices = Device.all.page(params[:page])
+    @device = Device.new
   end
 
   # GET /devices/1
@@ -35,6 +36,12 @@ class DevicesController < ApplicationController
         format.json { render json: @device.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def reset
+    @device = Device.find_device(device_params[:series_code])
+    @device.reset
+    redirect_to @device, notice: 'Device was successfully reset.'
   end
 
   # PATCH/PUT /devices/1

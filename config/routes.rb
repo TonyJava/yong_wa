@@ -49,6 +49,8 @@ Rails.application.routes.draw do
 
   resources :devices
 
+  post 'devices/reset' => 'devices#reset', as: :reset_device
+
   resources :users
 
   get 'auths/send_captcha'
