@@ -989,14 +989,25 @@ class MessageProcessor
           command = "TK,#{File.basename(file_name)},#{i},#{chunk_count},#{chunk}"
           len = format_num16(command.length)
           str = "#{len}*#{command}"
-          send_message_to(device, str)
-          sleep(1.0)
+
+          #push voice command to redis
+          $redis.rpush("#{device}-voice", str)
+
         end
       end
+
+      send_voice_message_impl(device)
     rescue Exception => e
       puts "#{e.inspect}"
     end
 
+  end
+
+  def self.send_voice_message_impl(device)
+    command_str = $redis.lpop("#{device}-voice")
+    return if command_str == nil
+
+    send_message_to(device, command_str)
   end
 
   def self.response_voice_message(sock, device, str)
@@ -1004,9 +1015,10 @@ class MessageProcessor
     begin
       #str = str.force_encoding("utf-8")
       #response of client has received file from server 
-      if str == nil
-        str = "TK ok"
-        sock.write("#{str}\r\n")
+      if str == "1"
+        #str = "TK ok"
+        #sock.write("#{str}\r\n")
+        send_voice_message_impl(device)
         return 
       end
       content = str.split(",", 4)[3]
@@ -1043,10 +1055,13 @@ class MessageProcessor
 
       end
 
-      response = "TK,1"
-      len = format_num16(response.length)
-      str = "#{len}*#{response}"
-      send_message_to(device, str)
+      if part == total
+        response = "TK,1"
+        len = format_num16(response.length)
+        str = "#{len}*#{response}"
+        send_message_to(device, str)
+      end
+
     rescue Exception => e
       puts "#{e.inspect}"
       puts e.backtrace.join("\n")
