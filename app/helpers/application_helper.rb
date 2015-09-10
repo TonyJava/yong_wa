@@ -71,9 +71,9 @@ module ApplicationHelper
     return JSON.parse(res.body, symbolize_names: true)[:error]
   end
 
-  def get_v_position(zone_code, station_code)
+  def get_v_position(operator_code, zone_code, station_code)
     api_key = "d659494cec8f47426b9613a50b9533b7"
-    mnc = 0
+    mnc = operator_code.to_i == 1 ? 1 : 0
     lac = zone_code
     cellid = station_code
     url = URI("http://a.apix.cn/apixlife/basestation/mob_unic?mnc=#{mnc}&lac=#{lac}&cellid=#{cellid}")  

@@ -252,7 +252,7 @@ class Device < ActiveRecord::Base
     new_record[:gps_sig] = data_array[2]
 
     if new_record[:gps_sig] == "V"
-      v_pos = ApplicationController.helpers.get_v_position(data_array[20], data_array[21])
+      v_pos = ApplicationController.helpers.get_v_position(data_array[19],data_array[20], data_array[21])
       new_record[:geo_loc] = [v_pos[:lat], "N", v_pos[:long], "E"].join(",") if v_pos[:lat] && v_pos[:long]
     elsif new_record[:gps_sig] == "A"
       new_record[:geo_loc] = data_array[3..6].join(",")
