@@ -54,10 +54,10 @@ class FunctionsController < ApplicationController
     else
 
       device.device_name = params[:device_name] unless params[:device_name] == nil
-      device.sex = params[:sex] unless params[:sex] == nil
-      device.birth = params[:birth] unless params[:birth] == nil
-      device.height = params[:height] unless params[:height] == nil
-      device.weight = params[:weight] unless params[:weight] == nil
+      device.sex = params[:sex] || "男"
+      device.birth = params[:birth] || "20150101"
+      device.height = params[:height] || "100cm"
+      device.weight = params[:weight] || "30kg"
       device.mobile = params[:mobile] unless params[:mobile] == nil
       device.imei = params[:imei] unless params[:imei] == nil
       device.save!

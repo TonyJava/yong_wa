@@ -1,6 +1,6 @@
 class UsersController < ApplicationController
   before_action :set_user, only: [:show, :edit, :update, :destroy]
-  before_action :require_login
+  before_action :require_login_role_0
   # GET /users
   # GET /users.json
   def index

@@ -27,6 +27,9 @@
               <li><%= link_to "histories", histories_path %></li>
               <li><%= link_to "devices", devices_path %></li>
               <li><%= link_to "socket listen", "#", id: "socket" %></li>
+            <% end %>
+
+            <% if session[:login] || session[:login_role_1] %>
               <!--<li><%= link_to 'Monitoring', sidekiq_web_path %></li> -->
               <li><%= link_to "logout", admin_login_path(id: 1), method: :delete %></li>
             <% end %>

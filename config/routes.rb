@@ -47,9 +47,11 @@ Rails.application.routes.draw do
     root 'logins#new'
   end
 
-  resources :devices
-
   post 'devices/reset' => 'devices#reset', as: :reset_device
+
+  get 'devices/reset_page' => 'devices#reset_page', as: :reset_page
+  
+  resources :devices
 
   resources :users
 

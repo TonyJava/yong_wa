@@ -28,24 +28,16 @@ class Device < ActiveRecord::Base
 
   DEFAULT_CONFIG = {
     sos: [
-          "18565739316",
-          "18062069679",
-          "13000003434"
+          "0",
+          "0",
+          "0"
       ],
 
     babyPhoneNumber: [
       {
-        name: "伙伴一",
-        value: "18565739316"
-        },
-      {
-        name: "伙伴二",
-        value: "18565739316"
-        },
-      {
-        name: "伙伴三",
-        value: "18565739316"
-        } 
+        name: "勇娃售后服务",
+        value: "400-179-6179"
+        }
       ],
 
     monitor: "1",
@@ -123,7 +115,8 @@ class Device < ActiveRecord::Base
   def reset
     user_device = UserDevice.find_by(device: self)
     user_device.delete if user_device
-    self.update!(mobile: nil, active: false, config_info: nil, tracking_info: nil, health_info: nil)
+    #Todo active false or true
+    self.update!(mobile: nil, active: true, config_info: nil, tracking_info: nil, health_info: nil)
   end
 
   def get_config
@@ -195,7 +188,7 @@ class Device < ActiveRecord::Base
            # binding.pry
           #end
           
-          result[key.to_sym] += hash_selection[key_extra] || 0 + hash_selection[key_zero_count] || 0
+          result[key.to_sym] += (hash_selection[key_extra] || 0) + (hash_selection[key_zero_count] || 0)
         else
           result[key.to_sym] += hash_selection[key_zero_count] || 0
         end

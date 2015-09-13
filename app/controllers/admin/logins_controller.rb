@@ -10,9 +10,15 @@ class Admin::LoginsController < ApplicationController
 
   def create
     @admin_manage_user = Admin::ManageUser.new(user_params)
-    if @admin_manage_user.registered?
+    registered_user = Admin::ManageUser.find_by(user_name: user_params[:user_name])
+    @admin_manage_user.role = registered_user.role if registered_user
+
+    if @admin_manage_user.registered? && @admin_manage_user.role == 0
       session[:login] = @admin_manage_user.id
       redirect_to users_path
+    elsif @admin_manage_user.registered? && @admin_manage_user.role == 1
+      session[:login_role_1] = @admin_manage_user.id
+      redirect_to reset_page_path
     else
       render :new
     end
@@ -20,6 +26,7 @@ class Admin::LoginsController < ApplicationController
 
   def destroy
     session[:login] = nil
+    session[:login_role_1] = nil
     redirect_to new_admin_login_path
   end
 

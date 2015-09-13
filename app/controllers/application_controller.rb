@@ -8,8 +8,20 @@ class ApplicationController < ActionController::Base
 
   private
 
-    def require_login
+    def require_login_role_0
       if session[:login] == nil
+        redirect_to new_admin_login_path
+      end
+    end
+
+    def require_login_role_1
+      if session[:login_role_1] == nil
+        redirect_to new_admin_login_path
+      end
+    end
+
+    def require_login
+      if session[:login] == nil && session[:login_role_1] == nil
         redirect_to new_admin_login_path
       end
     end

@@ -1,6 +1,8 @@
 class DevicesController < ApplicationController
   before_action :set_device, only: [:show, :edit, :update, :destroy]
-  before_action :require_login
+  before_action :require_login_role_0, only: [:edit, :destroy]
+  before_action :require_login_role_1, only: [:reset_page]
+  before_action :require_login, only: [:reset, :show, :update]
   # GET /devices
   # GET /devices.json
   def index
@@ -11,6 +13,8 @@ class DevicesController < ApplicationController
   # GET /devices/1
   # GET /devices/1.json
   def show
+    @login_role = 1 if session[:login_role_1] != nil
+    @login_role = 0 if session[:login] != nil
   end
 
   # GET /devices/new
@@ -36,6 +40,9 @@ class DevicesController < ApplicationController
         format.json { render json: @device.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def reset_page
   end
 
   def reset
