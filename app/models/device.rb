@@ -75,7 +75,7 @@ class Device < ActiveRecord::Base
     ],
     electronicFence: {
       center: "22.564025,N,113.242329,E",
-      radius: 500
+      radius: 1000
     },
     electronicFenceOn: "0",
     location: "1",
@@ -85,7 +85,7 @@ class Device < ActiveRecord::Base
 
   DEFAULT_TRACKING_RECORD = [
     {
-      time: "101930",
+      time: "10:19:30",
       gps_sig: "A",
       geo_loc: "22.564025,N,113.242329,E"
     }
@@ -267,6 +267,16 @@ class Device < ActiveRecord::Base
     elsif new_record[:gps_sig] == "A"
       new_record[:geo_loc] = data_array[3..6].join(",")
     end
+
+    ef_info = get_config_field(:electronicFence)
+
+    if ef_info == DEFAULT_CONFIG[:electronicFence]
+      set_config_field(:electronicFence, 
+                        {
+                          center: new_record[:geo_loc],
+                          radius: 1000
+                          })
+    end
     #new_record[:velocity] = data_array[7]
     #new_record[:direction] = data_array[8]
     #new_record[:other] = data_array[9..-1].to_s
@@ -276,7 +286,7 @@ class Device < ActiveRecord::Base
     # end
 
     if get_config_field(:electronicFenceOn).to_s == "1" && is_out_fence(new_record[:geo_loc])[0]
-      ApplicationController.helpers.send_fence_warning_for_device(self)
+      #ApplicationController.helpers.send_fence_warning_for_device(self)
       params = {}
       params[:watch_electronicFence] = "1"
       params[:watch_data] = new_record[:geo_loc]
