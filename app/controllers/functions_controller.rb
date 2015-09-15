@@ -132,7 +132,7 @@ class FunctionsController < ApplicationController
           data_type: history.data_type,
           data_description: MessageProcessor.get_history_descript(data_content),
           data_content: data_content,
-          time_stamp: history.created_at.to_s,
+          time_stamp: history.created_at.strftime("%Y-%m-%d %H:%M:%S"),
           location_code: history.location_code,
           location_type: history.location_type,
           data_stamp_address: history.data_stamp_address
