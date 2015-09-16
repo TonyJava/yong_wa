@@ -270,7 +270,7 @@ class Device < ActiveRecord::Base
 
     ef_info = get_config_field(:electronicFence)
 
-    if ef_info == DEFAULT_CONFIG[:electronicFence]
+    if ef_info == DEFAULT_CONFIG[:electronicFence] && new_record[:geo_loc]
       set_config_field(:electronicFence, 
                         {
                           center: new_record[:geo_loc],
