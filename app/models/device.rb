@@ -80,7 +80,7 @@ class Device < ActiveRecord::Base
     electronicFenceOn: "0",
     location: "1",
     shoot: "18565739316",
-    watch_keypad: "0"
+    watch_keypad: "1"
   }
 
   DEFAULT_TRACKING_RECORD = [
