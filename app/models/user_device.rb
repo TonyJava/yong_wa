@@ -19,4 +19,14 @@ class UserDevice < ActiveRecord::Base
   belongs_to :device
   validates :user_id, presence: true
   #validates :device_id, presence: true
+
+  def mobile
+    u = self.user
+    u.mobile if u
+  end
+
+  def deviceId
+    d = self.device
+    d.series_code if d
+  end
 end

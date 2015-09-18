@@ -93,22 +93,22 @@ class MessageProcessor
 
     if params[:freeTime]
       #set_free_period(device, {period: params[:freeTime].to_s.delete("[]") } )
-      params_str =  {period: params[:freeTime].to_s.delete("[]") }.to_s
+      params_str =  {period: params[:freeTime].to_s.delete("[ ]") }.to_s
       push_command_to_redis(device, 28, params_str)
       device_model.set_config_field(:freeTime, params[:freeTime])
     end
 
     if params[:weekendPositioning]
       #set_weekend_period(device, {period: params[:weekendPositioning].to_s.delete("[]")})
-      params_str = {period: params[:weekendPositioning].to_s.delete("[]") }.to_s
+      params_str = {period: params[:weekendPositioning].to_s.delete("[ ]") }.to_s
       push_command_to_redis(device, 41, params_str)
-      device_model.set_config_field(:weekendPositioning, params[:weekendPositioning])
+      device_model.set_config_field(:weekendPositioning, params[:weekendPositioning]）
     end
 
     if params[:schoolPositioning]
-      params_str = {period: params[:schoolPositioning].to_s.delete("[]") }.to_s
+      params_str = {period: params[:schoolPositioning].to_s.delete("[ ]") }.to_s
       push_command_to_redis(device, 23, params_str)
-      device_model.set_config_field(:schoolPositioning, params[:schoolPositioning])
+      device_model.set_config_field(:schoolPositioning, params[:schoolPositioning]）
     end
 
     if params[:lowPowerWarning]

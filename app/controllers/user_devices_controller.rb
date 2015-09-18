@@ -24,8 +24,13 @@ class UserDevicesController < ApplicationController
   # POST /user_devices
   # POST /user_devices.json
   def create
-    @user_device = UserDevice.new(user_device_params)
-
+    if user_device_params[:mobile] && user_device_params[:deviceId]
+      user = User.find_by(mobile: user_device_params[:mobile])
+      device = Device.find_device(user_device_params[:deviceId])
+      @user_device = UserDevice.new(user: user, device: device)
+    else
+      @user_device = UserDevice.new(user_device_params)
+    end
     respond_to do |format|
       if @user_device.save
         format.html { redirect_to @user_device, notice: 'User device was successfully created.' }
@@ -69,6 +74,6 @@ class UserDevicesController < ApplicationController
 
     # Never trust parameters from the scary internet, only allow the white list through.
     def user_device_params
-      params.require(:user_device).permit(:user_id, :device_id)
+      params.require(:user_device).permit(:user_id, :device_id, :mobile, :deviceId)
     end
 end
