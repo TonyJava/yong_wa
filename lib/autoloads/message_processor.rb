@@ -102,13 +102,13 @@ class MessageProcessor
       #set_weekend_period(device, {period: params[:weekendPositioning].to_s.delete("[]")})
       params_str = {period: params[:weekendPositioning].to_s.delete("[ ]") }.to_s
       push_command_to_redis(device, 41, params_str)
-      device_model.set_config_field(:weekendPositioning, params[:weekendPositioning]）
+      device_model.set_config_field(:weekendPositioning, params[:weekendPositioning])
     end
 
     if params[:schoolPositioning]
       params_str = {period: params[:schoolPositioning].to_s.delete("[ ]") }.to_s
       push_command_to_redis(device, 23, params_str)
-      device_model.set_config_field(:schoolPositioning, params[:schoolPositioning]）
+      device_model.set_config_field(:schoolPositioning, params[:schoolPositioning])
     end
 
     if params[:lowPowerWarning]

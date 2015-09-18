@@ -36,7 +36,7 @@ class Device < ActiveRecord::Base
     babyPhoneNumber: [
       {
         name: "勇娃售后服务",
-        value: "400-179-6179"
+        value: "4006791679"
         }
       ],
 
