@@ -108,7 +108,7 @@ class MessageProcessor
     if params[:schoolPositioning]
       params_str = {period: params[:schoolPositioning].to_s.delete("[]") }.to_s
       push_command_to_redis(device, 23, params_str)
-      device_model.set_config_field(:weekendPositioning, params[:schoolPositioning])
+      device_model.set_config_field(:schoolPositioning, params[:schoolPositioning])
     end
 
     if params[:lowPowerWarning]
