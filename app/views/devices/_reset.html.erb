@@ -1,9 +1,9 @@
 <%= form_for(Device.new, url: reset_device_url) do |f|%>
   <div class="field">
-    <%= f.label :deviceId %><br>
+    <%= f.label :deviceId, "设备号" %><br>
     <%= f.text_field :series_code %>
   </div>
   <div class="actions">
-    <%= f.submit :reset%>
+    <%= f.submit "确定"%>
   </div>
 <% end %>
