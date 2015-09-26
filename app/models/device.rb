@@ -348,6 +348,9 @@ class Device < ActiveRecord::Base
   private
     def set_device_name
       self.device_name ||= self.series_code
+      self.sex  ||= "男"
+      self.birth ||= "20150101"
+      self.height ||= "100cm"
     end
 
 end
