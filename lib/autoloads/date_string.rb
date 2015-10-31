@@ -30,4 +30,9 @@ class DateString
   def self.now
     Time.now.strftime("%Y-%m-%d,%H:%M:%S")
   end
+
+  def self.week_ago a
+    date_a = Date.strptime(a, "%Y-%m-%d")
+    (date_a - 7.day).strftime("%Y-%m-%d") 
+  end
 end

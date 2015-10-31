@@ -2,7 +2,7 @@ class ResqueSocket
   @queue = :resque_socket # Woeker起動時に指定するQUEUE名
 
   def self.perform()
-    logger = Logger.new(File.join(Rails.root, 'log', 'resque_socket.log'))
+    logger = Logger.new(File.join(Rails.root, 'log', 'resque_socket.log'), 'daily')
     logger.info "start"
     myChatServer = ChatServer.new( 2626 )
     myChatServer.run(logger)

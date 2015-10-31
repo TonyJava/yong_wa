@@ -300,6 +300,14 @@ class Device < ActiveRecord::Base
       hash_data[date_format.to_sym] = []
     end
     hash_data[date_format.to_sym].append(new_record)
+    
+    date_week_ago = DateString.week_ago(date_format)
+    if hash_data[date_week_ago.to_sym] != nil
+      date_week_ago = DateString.next_day(date_week_ago)
+      hash_data = hash_data.select {
+        |k, v| DateString.compare_less_or_equal(date_week_ago, k.to_s)
+      }      
+    end
 
     update(tracking_info: hash_data.to_json)
   end
@@ -351,6 +359,7 @@ class Device < ActiveRecord::Base
       self.sex  ||= "男"
       self.birth ||= "20150101"
       self.height ||= "100cm"
+      self.weight ||= "30kg"
     end
 
 end
