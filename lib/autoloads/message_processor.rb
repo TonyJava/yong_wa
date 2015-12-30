@@ -1004,7 +1004,12 @@ class MessageProcessor
   end
 
   def self.send_voice_message_impl(device)
-    command_str = $redis.lpop("#{device}-voice")
+    sock = $socket_device.key(device)
+    if sock
+      command_str = $redis.lpop("#{device}-voice")
+    else
+      puts "device not exists---"
+    end
     return if command_str == nil
 
     send_message_to(device, command_str)
