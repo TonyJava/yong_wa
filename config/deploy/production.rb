@@ -11,8 +11,8 @@
 set :stage, :production
 set :rails_env, :production
 
-# set :branch, 'develop'
-ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
+set :branch, 'develop'
+# ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 #host = '115.28.155.73' panda
 host = 'www.rails365.net'
 # Extended Server Syntax
