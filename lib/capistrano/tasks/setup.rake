@@ -54,6 +54,15 @@ namespace :setup do
    end
   end
 
+  desc "copy unicorn_init.sh and nginx.conf"
+  task :upload_nginx_sh do
+    on roles(:app) do
+      execute "ln -nfs #{current_path}/config/nginx.conf /etc/nginx/conf.d/#{fetch(:application)}"
+      execute "ln -nfs #{current_path}/config/unicorn_init.sh /etc/init.d/unicorn_#{fetch(:application)}"
+   end
+  end
+
+
   desc "init script"
   task :resque_setup do
     on roles(:app) do
