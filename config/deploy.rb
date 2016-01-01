@@ -62,6 +62,7 @@ set :linked_dirs, %w{log tmp/pids tmp/cache tmp/sockets vendor/bundle public/sys
 set :keep_releases, 5
 
 set :unicorn_config_path, -> { File.join(current_path, "config", "unicorn.rb") }
+set :unicorn_rack_env, "deployment"
 
 namespace :deploy do
 
