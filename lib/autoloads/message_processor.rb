@@ -1020,6 +1020,9 @@ class MessageProcessor
         #sock.write("#{str}\r\n")
         send_voice_message_impl(device)
         return 
+      elsif str == "0"
+        $redis.del "#{device}-voice"
+        return
       end
       content = str.split(",", 4)[3]
       #time_str = Time.now.strftime("%Y_%m_%d_%H_%M_%S")
