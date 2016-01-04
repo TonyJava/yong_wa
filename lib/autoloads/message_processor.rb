@@ -209,6 +209,7 @@ class MessageProcessor
         response_voice_message(sock, device, c[1])
       when 'LK'
         response_keep_connect(sock, device, c[1])
+        send_voice_message_impl(device)
         #Resque.enqueue(ResqueTestSendMessage)
       when 'UD'
         response_report_geo(sock, device, c[1])
