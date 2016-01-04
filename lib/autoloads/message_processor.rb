@@ -208,6 +208,7 @@ class MessageProcessor
       when 'TK'
         response_voice_message(sock, device, c[1])
       when 'LK'
+        puts "cccc"
         response_keep_connect(sock, device, c[1])
         send_voice_message_impl(device)
         #Resque.enqueue(ResqueTestSendMessage)
