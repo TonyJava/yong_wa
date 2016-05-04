@@ -14,7 +14,7 @@ set :rails_env, :production
 set :branch, 'develop'
 # ask :branch, `git rev-parse --abbrev-ref HEAD`.chomp
 #host = '115.28.155.73' panda
-host = 'www.rails365.net'
+host = '120.25.212.225'
 # Extended Server Syntax
 # ======================
 # This can be used to drop a more detailed server definition into the
