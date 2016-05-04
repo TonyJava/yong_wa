@@ -245,6 +245,7 @@ class Device < ActiveRecord::Base
   #response_report_geo
   #response_report_geo_2
   def add_tracking_record_geo(data_str)
+    Rails.logger.info "add_tracking_record_geo"
     begin
       hash_data = JSON.parse(self.tracking_info, symbolize_names: true)
     rescue Exception => e
@@ -260,8 +261,10 @@ class Device < ActiveRecord::Base
     new_record = {}
     new_record[:time] = "#{time_str[0..1]}:#{time_str[2..3]}:#{time_str[4..5]}"
     new_record[:gps_sig] = data_array[2]
+    Rails.logger.debug "data_array_gps_sig #{data_array}"
 
     if new_record[:gps_sig] == "V"
+      Rails.logger.debug "data_array #{data_array}"
       if !data_array[19] || !data_array[20] || !data_array[21]
         return
       end
@@ -338,7 +341,7 @@ class Device < ActiveRecord::Base
   end
 
   def is_out_fence(current_geo)
-    puts "current_geo" + current_geo if current_geo
+    puts "current_geo --------- #{current_geo}"
     config_info = get_config_field(:electronicFence)
     return [false, {dist: -1, radius: -1}] if config_info == nil
 

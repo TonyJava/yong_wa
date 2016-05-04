@@ -371,7 +371,7 @@ class MessageProcessor
   end
 
   def self.response_report_geo(sock, device, str)
-    puts "str" + str if str
+    puts "str ----------- #{str}"
     #TODO: update geo loc in database
     #geo_status = str.split(',')
     #geo_status
