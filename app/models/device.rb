@@ -338,6 +338,7 @@ class Device < ActiveRecord::Base
   end
 
   def is_out_fence(current_geo)
+    puts "current_geo" + current_geo if current_geo
     config_info = get_config_field(:electronicFence)
     return [false, {dist: -1, radius: -1}] if config_info == nil
 
