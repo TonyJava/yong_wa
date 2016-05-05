@@ -72,27 +72,28 @@ module ApplicationHelper
   end
 
   def get_v_position(operator_code, zone_code, station_code)
-    api_key = "d659494cec8f47426b9613a50b9533b7"
+    # api_key = "d659494cec8f47426b9613a50b9533b7"
     mnc = operator_code.to_i == 1 ? 1 : 0
     lac = zone_code
     cellid = station_code
-    url = URI("http://a.apix.cn/apixlife/basestation/mob_unic?mnc=#{mnc}&lac=#{lac}&cellid=#{cellid}")  
+    url = URI("http://api.cellocation.com/cell/?mcc=460&mnc=#{mnc}&lac=#{zone_code}&ci=#{station_code}&output=json")
+    puts url
 
     http = Net::HTTP.new(url.host, url.port)
 
     request = Net::HTTP::Get.new(url)
     request["accept"] = 'application/json'
     request["content-type"] = 'application/json'
-    request["apix-key"] = api_key
+    # request["apix-key"] = api_key
 
     response = http.request(request)
     response_data = JSON.parse(response.read_body, symbolize_names: true)
+    puts response_data
     res = {}
 
-    if response_data[:data]
-      res[:long] = response_data[:data][:lon]
-      res[:lat] = response_data[:data][:lat]
-    end
+    res[:long] = response_data[:lon]
+    res[:lat] = response_data[:lat]
+
     return res
   end
 

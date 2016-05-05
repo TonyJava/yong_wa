@@ -213,6 +213,7 @@ class MessageProcessor
         send_voice_message_impl(device)
         #Resque.enqueue(ResqueTestSendMessage)
       when 'UD'
+        puts "device ---- #{device}"
         response_report_geo(sock, device, c[1])
       when 'UD2'
         response_report_geo_2(sock, device, c[1])
