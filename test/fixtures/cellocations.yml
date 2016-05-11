@@ -1,0 +1,11 @@
+# Read about fixtures at http://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  mnc: MyString
+  zone_code: MyString
+  station_code: MyString
+
+two:
+  mnc: MyString
+  zone_code: MyString
+  station_code: MyString

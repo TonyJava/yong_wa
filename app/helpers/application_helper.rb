@@ -76,24 +76,30 @@ module ApplicationHelper
     mnc = operator_code.to_i == 1 ? 1 : 0
     lac = zone_code
     cellid = station_code
-    url = URI("http://api.cellocation.com/cell/?mcc=460&mnc=#{mnc}&lac=#{zone_code}&ci=#{station_code}&output=json")
-    puts url
-
-    http = Net::HTTP.new(url.host, url.port)
-
-    request = Net::HTTP::Get.new(url)
-    request["accept"] = 'application/json'
-    request["content-type"] = 'application/json'
-    # request["apix-key"] = api_key
-
-    response = http.request(request)
-    response_data = JSON.parse(response.read_body, symbolize_names: true)
-    puts response_data
     res = {}
+    if cellocation = Cellocation.find_by(mnc: mnc, zone_code: zone_code, station_code: station_code)
+      res[:long] = cellocation.long
+      res[:lat] = cellocation.lat
+    else
+      url = URI("http://api.cellocation.com/cell/?mcc=460&mnc=#{mnc}&lac=#{zone_code}&ci=#{station_code}&output=json")
+      puts url
 
-    res[:long] = response_data[:lon]
-    res[:lat] = response_data[:lat]
+      http = Net::HTTP.new(url.host, url.port)
 
+      request = Net::HTTP::Get.new(url)
+      request["accept"] = 'application/json'
+      request["content-type"] = 'application/json'
+      # request["apix-key"] = api_key
+
+      response = http.request(request)
+      response_data = JSON.parse(response.read_body, symbolize_names: true)
+      puts response_data
+
+      res[:long] = response_data[:lon]
+      res[:lat] = response_data[:lat]
+
+      Cellocation.create(mnc: mnc, zone_code: zone_code, station_code: station_code, long: res[:long], lat: res[:lat])
+    end
     return res
   end
 
